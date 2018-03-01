@@ -1,5 +1,6 @@
 package com.fast.dht.db.domain;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fast.dht.net.model.Info;
@@ -12,6 +13,7 @@ public class Torrent extends SuperEntity {
 	private long creationTime;
 	private String comment;
 	private String createdBy;
+	@Indexed
 	private String type;
 	private Info info;
 

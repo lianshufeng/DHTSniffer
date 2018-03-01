@@ -1,5 +1,6 @@
 package com.fast.dht.db.domain;
 
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -13,9 +14,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class InfoHash extends SuperEntity {
 
 	// 访问次数
+	@Indexed
 	private int accessCount;
 
 	// 更新信息的主机
+	@Indexed
 	private String updateHost;
 
 	public int getAccessCount() {

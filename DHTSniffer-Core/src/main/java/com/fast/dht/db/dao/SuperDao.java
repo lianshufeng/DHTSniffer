@@ -9,7 +9,7 @@ import com.fast.dht.db.util.DBUtil;
 
 public abstract class SuperDao {
 
-	protected MongoTemplate mongoTemplate;
+	public MongoTemplate mongoTemplate;
 
 	public SuperDao(MongoTemplate mongoTemplate) {
 		this.mongoTemplate = mongoTemplate;
