@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <!--jqueryui-->
+    <link href="css/jquery-ui.min.css" rel="stylesheet">
+    <!--jqgrid的css-->
+    <link href="css/ui.jqgrid.css" rel="stylesheet">
+
+
+    <!--jquery-->
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <!--locale-->
+    <script src="js/i18n/grid.locale-cn.js"></script>
+    <!--jqgrid的js-->
+    <script src="js/jquery.jqGrid.min.js"></script>
+
+    <meta charset="utf-8"/>
+    <title>DHT 嗅探统计页面</title>
+
+</head>
+<body>
+
+
+<!-- info hash-->
+<div>
+    <table id="infoHash_jqGrid"></table>
+    <div id="infoHash_jqGridPager"></div>
+</div>
+<p />
+<!-- Torrent -->
+<div>
+    <table id="torrent_jqGrid"></table>
+    <div id="torrent_jqGridPager"></div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#infoHash_jqGrid").jqGrid({
+            url: 'query/infohash',
+            mtype: "POST",
+            datatype: "json",
+            colModel: [
+                {label: 'hash', name: 'hash', key: true,width: 80},
+                {label: '访问次数', name: 'accessCount', key: true,width: 40},
+                {label: '访问主机', name: 'updateHost', key: true,width: 120},
+                {label: '创建时间', name: 'createTime',key: true, width: 120}
+            ],
+            viewrecords: true,
+            width: 1366,
+            height: 300,
+            rowNum: 30,
+            rowList:[30,80,200],
+            pager: "#infoHash_jqGridPager",
+            caption:"磁力链"
+        });
+
+        jQuery("#infoHash_jqGrid").jqGrid('navGrid','#infoHash_jqGridPager',{edit:false,add:false,del:false,search:false});
+
+    });
+
+</script>
+
+
+<script type="text/javascript">
+    $("#torrent_jqGrid").jqGrid({
+        url: 'query/torrent',
+        mtype: "POST",
+        datatype: "json",
+        colModel: [
+            {label: 'hash', name: 'hash', key: true, width: 130},
+            {label: '文档类型', name: 'type',key: true, width: 60},
+            {label: '种子标题', name: 'name', width: 200},
+            {label: '文件列表', name: 'files', width: 150},
+            {label: '空间大小', name: 'length', width: 60},
+            {label: '创建时间', name: 'createTime',key: true, width: 80}
+        ],
+        viewrecords: true,
+        width: 1366,
+        height: 400,
+        rowNum: 30,
+        rowList:[30,80,200],
+        pager: "#torrent_jqGridPager",
+        caption:"种子"
+    });
+    jQuery("#torrent_jqGrid").jqGrid('navGrid','#torrent_jqGridPager',{edit:false,add:false,del:false,search:false});
+
+</script>
+
+
+</body>
+</html>
