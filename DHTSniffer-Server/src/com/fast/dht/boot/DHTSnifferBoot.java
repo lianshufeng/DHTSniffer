@@ -42,7 +42,8 @@ public class DHTSnifferBoot implements ServletContextListener {
 	 * @see ServletContextListener#contextDestroyed(ServletContextEvent)
 	 */
 	public void contextDestroyed(ServletContextEvent arg0) {
-		// TODO Auto-generated method stub
+		DHTSnifferServer dhtSnifferServer = 	applicationContext.getBean(DHTSnifferServer.class);
+		dhtSnifferServer.stop();
 	}
 
 	/**
