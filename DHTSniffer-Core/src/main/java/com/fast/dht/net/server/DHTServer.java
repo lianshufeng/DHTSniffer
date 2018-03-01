@@ -332,8 +332,13 @@ public class DHTServer {
 		map.put("nodes", new byte[] {});
 		map.put("id", getNeighbor(info_hash));
 		sendKRPC(address, createQueries(t, "r", map));
-		if (onGetPeersListener != null)
-			onGetPeersListener.onGetPeers(address, info_hash);
+		if (onGetPeersListener != null) {
+			try {
+				onGetPeersListener.onGetPeers(address, info_hash);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		LOG.debug("info_hash[GetPeers] : " + address.toString() + " - " + BytesUtil.binToHex(info_hash));
 		infoHashCount++;
 	}
@@ -362,8 +367,13 @@ public class DHTServer {
 		map.put("id", getNeighbor(info_hash));
 		sendKRPC(address, createQueries(t, "r", map));
 		if (Arrays.equals(token, Arrays.copyOfRange(info_hash, 0, 2))) {
-			if (onAnnouncePeerListener != null)
-				onAnnouncePeerListener.onAnnouncePeer(address, info_hash, port);
+			if (onAnnouncePeerListener != null) {
+				try {
+					onAnnouncePeerListener.onAnnouncePeer(address, info_hash, port);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		LOG.debug("info_hash[AnnouncePeer] : " + address.toString() + " - " + BytesUtil.binToHex(info_hash));
 		infoHashCount++;
