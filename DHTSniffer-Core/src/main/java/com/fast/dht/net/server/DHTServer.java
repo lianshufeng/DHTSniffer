@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -188,8 +189,10 @@ public class DHTServer {
 			@Override
 			public void run() {
 				long runTime = System.currentTimeMillis() - startTime;
-				int min = ((int) (runTime / 1000 / 60)) + 1;
-				int rate = (int) (infoHashCount / min);
+				long s = runTime / 1000;
+				BigDecimal count = new BigDecimal(infoHashCount);
+				BigDecimal time = new BigDecimal(s);
+				double rate = count.divide(time, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(60)).doubleValue();
 				String info = String.format("-[ %s ] - [ count : %s ] - [  rate: %s/min ]", formatTimer(runTime),
 						infoHashCount, rate);
 				LOG.info(info);
