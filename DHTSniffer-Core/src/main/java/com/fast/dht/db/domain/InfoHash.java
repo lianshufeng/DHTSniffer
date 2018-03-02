@@ -21,6 +21,10 @@ public class InfoHash extends SuperEntity {
 	@Indexed
 	private String updateHost;
 
+	// 获取总次数
+	@Indexed
+	private long getInfoCount;
+
 	public int getAccessCount() {
 		return accessCount;
 	}
@@ -35,6 +39,14 @@ public class InfoHash extends SuperEntity {
 
 	public void setUpdateHost(String updateHost) {
 		this.updateHost = updateHost;
+	}
+
+	public long getGetInfoCount() {
+		return getInfoCount;
+	}
+
+	public void setGetInfoCount(long getInfoCount) {
+		this.getInfoCount = getInfoCount;
 	}
 
 }

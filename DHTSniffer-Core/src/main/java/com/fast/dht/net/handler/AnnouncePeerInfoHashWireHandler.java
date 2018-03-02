@@ -436,7 +436,7 @@ public class AnnouncePeerInfoHashWireHandler implements IInfoHashHandler {
 				if (path != null) {
 					path = path.length() > 200 ? path.substring(0, 200) : path;
 				}
-				SubFile subFile = new SubFile(StringUtil.formatSize((double) length), path);
+				SubFile subFile = new SubFile(String.valueOf(length), path);
 
 				String type = ExtensionUtil.getExtensionType(subFile.getPath());
 				if (type != null) {

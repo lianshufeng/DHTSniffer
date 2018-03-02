@@ -14,7 +14,6 @@ import com.fast.dht.dao.DataDao;
 import com.fast.dht.db.domain.Torrent;
 import com.fast.dht.model.JQGridQuery;
 import com.fast.dht.model.JQGridResult;
-import com.fast.dht.net.model.Info;
 import com.fast.dht.util.JsonUtil;
 import com.fast.dht.util.ServletUtil;
 
@@ -76,21 +75,16 @@ public class QueryTorrent extends HttpServlet {
 			// 取出数据
 			Torrent torrent = (Torrent) rows[i];
 			Map<String, Object> data = new HashMap<String, Object>();
-			data.put("createTime", ServletUtil.formatTime(torrent.getCreateTime()));
+			data.put("name", torrent.getName());
 			data.put("hash", torrent.getHash());
-			data.put("type", torrent.getType());
-			data.put("accessCount", torrent.getAccessCount());
-			Info info = torrent.getInfo();
-			if (info != null) {
-				data.put("name", info.getName());
-				try {
-					data.put("files", JsonUtil.toJson(info.getFiles()));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				data.put("length", ServletUtil.formatSize(info.getLength()));
+			data.put("size", ServletUtil.formatSize(torrent.getSize()));
+			data.put("createTime", ServletUtil.formatTime(torrent.getCreateTime()));
+			data.put("creationTime", ServletUtil.formatTime(torrent.getCreationTime()));
+			try {
+				data.put("files", JsonUtil.toJson(torrent.getFiles()));
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-
 			rows[i] = data;
 		}
 

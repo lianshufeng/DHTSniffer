@@ -222,6 +222,7 @@
                         {label: '访问主机', name: 'updateHost', key: true,},
                         {label: '创建时间', name: 'createTime',key: true}
                     ],
+                    sortorder: "desc",
                     viewrecords : true,
                     height: 350,
                     rowNum: 30,
@@ -301,13 +302,13 @@
                     datatype: "json",
                     colModel: [
                         {label: 'hash', name: 'hash', key: true, width: 130},
-                        {label: '访问次数', name: 'accessCount', key: true,width: 40},
-                        {label: '文档类型', name: 'type',key: true},
-                        {label: '种子标题', name: 'name'},
+                        {label: '种子名称', name: 'name'},
                         {label: '文件列表', name: 'files'},
-                        {label: '空间大小', name: 'length', width: 40},
-                        {label: '创建时间', name: 'createTime',key: true, width: 80}
+                        {label: '空间大小', name: 'size', width: 40},
+                        {label: '发布时间', name: 'creationTime',key: true, width: 80},
+                        {label: '收录时间', name: 'createTime',key: true, width: 80}
                     ],
+                    sortorder: "desc",
                     viewrecords : true,
                     height: 350,
                     rowNum: 30,

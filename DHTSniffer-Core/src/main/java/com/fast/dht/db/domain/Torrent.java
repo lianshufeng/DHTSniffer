@@ -3,39 +3,24 @@ package com.fast.dht.db.domain;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fast.dht.net.model.Info;
+import com.fast.dht.model.FileModel;
 
 @Document
 public class Torrent extends SuperEntity {
 
-	// 访问次数
+	// 种子创建时间
 	@Indexed
-	private int accessCount;
-
-	private String announce;
-	private String[] announces;
 	private long creationTime;
-	private String comment;
-	private String createdBy;
+
+	// 种子的名称
 	@Indexed
-	private String type;
-	private Info info;
+	private String name;
 
-	public String getAnnounce() {
-		return announce;
-	}
+	// 文件列表
+	private FileModel[] files;
 
-	public void setAnnounce(String announce) {
-		this.announce = announce;
-	}
-
-	public String[] getAnnounces() {
-		return announces;
-	}
-
-	public void setAnnounces(String[] announces) {
-		this.announces = announces;
-	}
+	// 占用空间
+	private long size;
 
 	public long getCreationTime() {
 		return creationTime;
@@ -45,44 +30,28 @@ public class Torrent extends SuperEntity {
 		this.creationTime = creationTime;
 	}
 
-	public String getComment() {
-		return comment;
+	public String getName() {
+		return name;
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getCreatedBy() {
-		return createdBy;
+	public FileModel[] getFiles() {
+		return files;
 	}
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
+	public void setFiles(FileModel[] files) {
+		this.files = files;
 	}
 
-	public String getType() {
-		return type;
+	public long getSize() {
+		return size;
 	}
 
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public Info getInfo() {
-		return info;
-	}
-
-	public void setInfo(Info info) {
-		this.info = info;
-	}
-
-	public int getAccessCount() {
-		return accessCount;
-	}
-
-	public void setAccessCount(int accessCount) {
-		this.accessCount = accessCount;
+	public void setSize(long size) {
+		this.size = size;
 	}
 
 }

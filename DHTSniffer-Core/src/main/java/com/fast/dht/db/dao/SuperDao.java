@@ -27,7 +27,6 @@ public abstract class SuperDao {
 		update.setOnInsert("createTime", DBUtil.getTime());
 		return update;
 	}
-	
 
 	/**
 	 * 创建hash查询的查询对象
@@ -37,6 +36,17 @@ public abstract class SuperDao {
 	 */
 	protected Query createHashQuery(String hash) {
 		return new Query().addCriteria(Criteria.where("hash").is(hash));
+	}
+
+	/**
+	 * 是否已存在
+	 * 
+	 * @param hash
+	 * @return
+	 */
+	public boolean exists(String hash, Class<?> entityClass) {
+		Query query = createHashQuery(hash);
+		return this.mongoTemplate.exists(query, entityClass);
 	}
 
 }

@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 
 import com.fast.dht.impl.DHTSnifferServerImpl;
 import com.fast.dht.net.listener.OnGetPeersListener;
+import com.fast.dht.util.AddressUtil;
 import com.fast.dht.util.BytesUtil;
 
 /**
@@ -24,17 +25,7 @@ public class DHTOnGetPeersListener extends SuperListener implements OnGetPeersLi
 	public void onGetPeers(InetSocketAddress address, byte[] info_hash) {
 		String hash = BytesUtil.binToHex(info_hash).toLowerCase();
 		// 保存到数据库里
-		super.infoHashDao.updateHash(hash, formatInetAddress(address));
-	}
-
-	/**
-	 * 格式化ip地址
-	 * 
-	 * @param address
-	 * @return
-	 */
-	private static String formatInetAddress(InetSocketAddress address) {
-		return address.getAddress().getHostAddress() + ":" + address.getPort();
+		super.infoHashDao.updateHash(hash, AddressUtil.format(address));
 	}
 
 }
