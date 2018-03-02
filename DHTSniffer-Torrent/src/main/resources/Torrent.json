@@ -1,0 +1,9 @@
+{
+	"mongo": {
+		"dbName": "dht",
+		"host": [
+			"127.0.0.1"
+		]
+	},
+	"maxRunTaskCount": 100
+}
