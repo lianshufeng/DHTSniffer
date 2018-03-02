@@ -40,6 +40,8 @@ public class DHTOnAnnouncePeerListener extends SuperListener implements OnAnnoun
 			} catch (Exception e) {
 				LOG.error(e);
 			}
+		} else {
+			torrentDao.incAccessCount(hash);
 		}
 	}
 

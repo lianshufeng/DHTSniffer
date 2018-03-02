@@ -8,6 +8,10 @@ import com.fast.dht.net.model.Info;
 @Document
 public class Torrent extends SuperEntity {
 
+	// 访问次数
+	@Indexed
+	private int accessCount;
+
 	private String announce;
 	private String[] announces;
 	private long creationTime;
@@ -71,6 +75,14 @@ public class Torrent extends SuperEntity {
 
 	public void setInfo(Info info) {
 		this.info = info;
+	}
+
+	public int getAccessCount() {
+		return accessCount;
+	}
+
+	public void setAccessCount(int accessCount) {
+		this.accessCount = accessCount;
 	}
 
 }

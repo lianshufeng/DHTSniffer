@@ -3,6 +3,7 @@ package com.fast.dht.db.dao;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import com.fast.dht.db.domain.Torrent;
 import com.fast.dht.db.util.DBUtil;
@@ -31,6 +32,19 @@ public class TorrentDao extends SuperDao {
 		Query query = createHashQuery(hash);
 		return this.mongoTemplate.exists(query, Torrent.class);
 	}
+	
+	
+	/**
+	 * 增加访问次数
+	 * @param hash
+	 */
+	public void incAccessCount(String hash) {
+		Query query = createHashQuery(hash);
+		Update update = createUpdate();
+		update.inc("accessCount", 1);
+		this.mongoTemplate.updateFirst(query, update, Torrent.class);
+	}
+	
 
 	/**
 	 * 保存种子信息
@@ -44,6 +58,7 @@ public class TorrentDao extends SuperDao {
 		entity.setCreateTime(DBUtil.getTime());
 		entity.setUpdateTime(DBUtil.getTime());
 		entity.setHash(hash);
+		entity.setAccessCount(1);
 
 		BeanUtils.copyProperties(torrent, entity);
 		if (torrent.getAnnounceList() != null) {
