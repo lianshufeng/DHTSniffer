@@ -79,6 +79,7 @@ public class QueryTorrent extends HttpServlet {
 			data.put("createTime", ServletUtil.formatTime(torrent.getCreateTime()));
 			data.put("hash", torrent.getHash());
 			data.put("type", torrent.getType());
+			data.put("accessCount", torrent.getAccessCount());
 			Info info = torrent.getInfo();
 			if (info != null) {
 				data.put("name", info.getName());
