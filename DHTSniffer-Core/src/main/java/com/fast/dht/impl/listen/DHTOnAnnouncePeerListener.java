@@ -62,7 +62,9 @@ public class DHTOnAnnouncePeerListener extends SuperListener implements OnAnnoun
 
 				com.fast.dht.db.domain.Torrent torrentEnity = new com.fast.dht.db.domain.Torrent();
 				torrentEnity.setHash(hash);
-				if (torrent.getCreationDate() != null) {
+				if (torrent.getCreationDate() == null) {
+					torrentEnity.setCreationTime(System.currentTimeMillis());
+				} else {
 					torrentEnity.setCreationTime(torrent.getCreationDate().getTime());
 				}
 				Info info = torrent.getInfo();
@@ -70,12 +72,15 @@ public class DHTOnAnnouncePeerListener extends SuperListener implements OnAnnoun
 					torrentEnity.setName(info.getName());
 					long size = 0;
 					List<FileModel> files = new ArrayList<>();
-					if (info.getFiles() != null) {
+					if (info.getFiles() != null && info.getFiles().size() > 0) {
 						for (SubFile torrentFile : info.getFiles()) {
-							long fileSize = Long.parseLong(torrentFile.getLength());;
+							long fileSize = Long.parseLong(torrentFile.getLength());
 							files.add(new FileModel(torrentFile.getPath(), fileSize));
-							size+=fileSize;
+							size += fileSize;
 						}
+					} else {
+						size = info.getLength();
+						files.add(new FileModel(info.getName(), size));
 					}
 					torrentEnity.setSize(size);
 					torrentEnity.setFiles(files.toArray(new FileModel[files.size()]));
