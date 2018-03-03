@@ -192,7 +192,8 @@ public class DHTServer {
 				long s = runTime / 1000;
 				BigDecimal count = new BigDecimal(infoHashCount);
 				BigDecimal time = new BigDecimal(s);
-				double rate = count.divide(time, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(60)).doubleValue();
+				double rate = count.divide(time, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(60))
+						.doubleValue();
 				String info = String.format("-[ %s ] - [ count : %s ] - [  rate: %s/min ]", formatTimer(runTime),
 						infoHashCount, rate);
 				LOG.info(info);
@@ -228,7 +229,7 @@ public class DHTServer {
 
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-			LOG.error(String.format(" - [%s] - [%s]", ctx.getHandler(), e));
+			LOG.debug(String.format(" - [%s] - [%s]", ctx.getHandler(), e));
 		}
 	}
 
