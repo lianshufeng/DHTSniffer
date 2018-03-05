@@ -1,7 +1,7 @@
 {
 	"cmds": [
 		{
-			"cmd": "bootstrap.sh",
+			"cmd": "sh bootstrap.sh",
 			"dir":"/opt/torrent/"
 		}
 	]
