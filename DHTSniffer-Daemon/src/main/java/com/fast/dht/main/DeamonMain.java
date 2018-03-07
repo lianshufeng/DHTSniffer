@@ -2,6 +2,8 @@ package com.fast.dht.main;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -17,7 +19,7 @@ public class DeamonMain {
 	private static final Logger LOG = Logger.getLogger(DeamonMain.class);
 
 	public static void main(String[] args) throws Exception {
-		
+
 		final Commands commands = readConfig();
 		final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(commands.getCmds().length);
 		for (final Cmd cmd : commands.getCmds()) {
@@ -28,7 +30,18 @@ public class DeamonMain {
 					try {
 						LOG.info("Run cmd : " + JsonUtil.toJson(cmd));
 						File dir = cmd.getDir() == null ? null : new File(cmd.getDir());
-						Process process = Runtime.getRuntime().exec(cmd.getCmd(), cmd.getEnvp(), dir);
+						final Process process = Runtime.getRuntime().exec(cmd.getCmd(), cmd.getEnvp(), dir);
+						// 增加重启守护时间
+						if (cmd.getReStartTime() != null) {
+							new Timer().schedule(new TimerTask() {
+
+								@Override
+								public void run() {
+									LOG.info("kill "+process);
+									process.destroyForcibly();
+								}
+							}, cmd.getReStartTime());
+						}
 						process.waitFor();
 					} catch (Exception e) {
 						e.printStackTrace();

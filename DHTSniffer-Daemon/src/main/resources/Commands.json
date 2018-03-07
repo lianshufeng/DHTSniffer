@@ -1,7 +1,8 @@
 {
 	"cmds": [
 		{
-			"cmd": "sh bootstrap.sh",
+			"reStartTime":600000,
+			"cmd": "java -Xmx1000m -Xms100m -Duser.timezone=GMT+8 -Dname=toTorrent -cp  torrent.jar com.fast.dht.torrent.TorrentMain",
 			"dir":"/opt/torrent/"
 		}
 	]

@@ -1,7 +1,8 @@
 package com.fast.dht.model;
 
 public class Cmd {
-
+	// 重启时间
+	private Long reStartTime = null;
 	// 命令行
 	private String cmd;
 	// 环境
@@ -31,6 +32,14 @@ public class Cmd {
 
 	public void setDir(String dir) {
 		this.dir = dir;
+	}
+
+	public Long getReStartTime() {
+		return reStartTime;
+	}
+
+	public void setReStartTime(Long reStartTime) {
+		this.reStartTime = reStartTime;
 	}
 
 }
