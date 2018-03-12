@@ -2,7 +2,7 @@
   <div class="main">
     <img class="logo" src="../assets/logo.png">
       <h1>
-        <input class="kw" name="wd"  maxlength="255" autocomplete="off"  v-model="wd"  @keydown="enterKeyDown($event)"  />
+        <input class="kw" name="wd"  maxlength="255" placeholder="搜点东西吧..." autocomplete="off"  v-model="wd"  @keydown="enterKeyDown($event)"  />
         <span class="s_btn_wr">
           <a  class="s_a"  v-on:click="search()" >找一下</a>
         </span>
