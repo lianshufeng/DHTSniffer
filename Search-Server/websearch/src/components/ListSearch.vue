@@ -29,43 +29,56 @@
           <div class="Search_result_title" >
             <span>{{item.title}}</span>
           </div>
+
           <div class="Search_result_information">
             <div class="Information_detail_information" >
               <p class="Information_detail_information_Item">
-                <span>文件名:</span>
+                <span class="Page_Item_title">文件名称:</span>
                 <span>{{item.fileName}}</span>
               </p>
               <p class="Information_detail_information_Item" >
-                <span>文件数目：</span>
+                <span class="Page_Item_title">文件数量：</span>
                 <span>{{item.fileCount}}</span>
               </p>
               <p class="Information_detail_information_Item" >
-                <span>文件大小：</span>
+                <span class="Page_Item_title">文件大小：</span>
                 <span>{{item.size}}</span>
               </p>
               <p class="Information_detail_information_Item" >
-                <span>收录时间：</span>
+                <span class="Page_Item_title" >收录时间：</span>
                 <span>{{ item.time }}</span>
               </p>
+
+
+
+
             </div>
           </div>
         </div>
         <!-- 底部翻页-->
         <div id="Page_page_container">
           <div id="Page_page_list">
-            <span id="Page_up_page" class="hidden">上一页</span>
-            <strong class="Page_current_page">1</strong>
-            <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
-            <span id="Page_next_page" class="">下一页</span>
+            <!-- 上一页渲染 -->
+            <template>
+              <span class="Page_up_page" v-show="page.current > 1"  v-on:click="skipPage(page.current-1)" >上一页</span>
+            </template>
+            <!-- 页码的渲染 -->
+            <template v-for="n in page.total"  >
+              <span v-if="n == page.current" :key="n" class="Page_current_page"  >
+                {{n}}
+              </span>
+              <span v-else :key="n" v-on:click="skipPage(n)">
+                {{n}}
+              </span>
+            </template>
+            <!-- 下一页的渲染 -->
+            <template>
+              <span class="Page_next_page" v-show="page.current < page.total" v-on:click="skipPage(page.current+1)">下一页</span>
+            </template>
           </div>
         </div>
       </div>
       <div class="Search_content_right">
-        <p>111</p>
-        <p>111</p>
-        <p>111</p>
-        <p>111</p>
-        <p>111</p>
       </div>
       <div class="clearfix" ></div>
     </div>
@@ -85,9 +98,20 @@
 import ajax from 'axios'
 export default {
   name: 'ListSearch',
+  methods: {
+    skipPage: function (newPage) {
+      console.log(newPage)
+      // 需要请求成功后更改
+      this.page.current = newPage
+    }
+  },
   data () {
     return {
       wd: '',
+      page: {
+        total: 5,
+        current: 2
+      },
       searchResult: [
         {
           id: 1,
@@ -95,7 +119,8 @@ export default {
           size: '12.4G',
           fileName: 'testFile.mp4',
           fileCount: 25,
-          time: '2017-09-06'
+          time: '2017-09-06',
+          url: 'http://www.baidu.com/1.mp4'
         },
         {
           id: 2,
@@ -103,55 +128,8 @@ export default {
           size: '20.7G',
           fileName: 'test.rmvb',
           fileCount: 3,
-          time: '2017-09-06'
-        },
-        {
-          id: 3,
-          title: 'test3',
-          size: '20.7G',
-          fileName: 'test.rmvb',
-          fileCount: 3,
-          time: '2017-09-06'
-        },
-        {
-          id: 4,
-          title: 'test4',
-          size: '20.7G',
-          fileName: 'test.rmvb',
-          fileCount: 3,
-          time: '2017-09-06'
-        },
-        {
-          id: 5,
-          title: 'test5',
-          size: '20.7G',
-          fileName: 'test.rmvb',
-          fileCount: 3,
-          time: '2017-09-06'
-        },
-        {
-          id: 6,
-          title: 'test6',
-          size: '20.7G',
-          fileName: 'test.rmvb',
-          fileCount: 3,
-          time: '2017-09-06'
-        },
-        {
-          id: 7,
-          title: 'test7',
-          size: '20.7G',
-          fileName: 'test.rmvb',
-          fileCount: 3,
-          time: '2017-09-06'
-        },
-        {
-          id: 8,
-          title: 'test8',
-          size: '20.7G',
-          fileName: 'test.rmvb',
-          fileCount: 3,
-          time: '2017-09-06'
+          time: '2017-09-06',
+          url: 'http://www.baidu.com/1.rmvb'
         }
       ]
     }
@@ -176,11 +154,15 @@ export default {
     margin: 0px
   }
 
+
   .clearfix{
     height: 0;
     clear: both;
   }
-
+  .Page_Item_title{
+    float: left;
+    width: 80px;
+  }
   #Bottom_bottom_wrapper {
     margin: 0 auto;
     text-align: center;
@@ -190,9 +172,9 @@ export default {
     z-index: 10;
   }
 
-  #Page_page_container #Page_page_list span#Page_next_page, #Page_page_container #Page_page_list span#Page_up_page {
+  #Page_page_container #Page_page_list span.Page_next_page, #Page_page_container #Page_page_list span.Page_up_page {
     width: auto;
-    padding: 0 18px;
+    padding: 0 6px;
   }
 
   #Page_page_container #Page_page_list span, #Page_page_container #Page_page_list strong {
@@ -203,8 +185,9 @@ export default {
     line-height: 34px;
     width: 34px;
     border: 1px solid #e1e2e3;
-    margin-right: 9px;
+    margin-right: 4px;
     color: #5a5a58;
+    cursor: pointer;
   }
 
   #Page_page_container {
@@ -231,7 +214,7 @@ export default {
     vertical-align: top;
     border-left: 1px solid #e1e1e1;
     padding-left: 30px;
-    padding-bottom: 20px;
+    /*padding-bottom: 20px;*/
   }
   .Search_content_left {
     width: 45%;
@@ -320,5 +303,16 @@ export default {
     font-size: 13px;
     padding: 10px 15px;
     color: #333;
+  }
+  .Page_current_page{
+    color: #333 !important;
+    font-weight: 700!important;
+    height: 36px!important;
+    width: 36px!important;
+    border: none!important;
+    cursor: default!important;
+    }
+  .hidden {
+    display: none!important;
   }
 </style>
