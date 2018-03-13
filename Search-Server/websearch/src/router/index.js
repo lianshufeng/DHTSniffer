@@ -5,17 +5,12 @@ import ListSearch from '@/components/ListSearch'
 
 Vue.use(Router)
 
-export default new Router({
+var router = new Router({
   routes: [
     {
       path: '/',
       name: 'MainSearch',
       component: MainSearch
-    },
-    {
-      path: '/s/:wd/:page',
-      name: 'ListSearch',
-      component: ListSearch
     },
     {
       path: '/s/:wd',
@@ -24,3 +19,13 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.length === 0) {
+    from.name ? next({name: from.name}) : next('/')
+  } else {
+    next()
+  }
+})
+
+export default router
