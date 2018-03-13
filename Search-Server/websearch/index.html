@@ -1,15 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>金牌找你妹，竭诚为您提供搜索服务。</title>
+  <!-- 引入样式文件 -->
+  <% for (var css in htmlWebpackPlugin.files.css) { %>
+  <link href=".${htmlWebpackPlugin.files.css[css]}" rel="stylesheet" th:href="@{/resources${htmlWebpackPlugin.files.css[css]}}" >
+  <% } %>
   <!-- jquery -->
   <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-
 </head>
 <body>
-<div id="app"></div>
-<!-- built files will be auto injected -->
+  <!-- 主机地址-->
+  <input type="hidden" id="HostUrl" value="http://127.0.0.1/" th:value="@{/}"/>
+  <!-- 视图 -->
+  <div id="app"></div>
+  <!-- 引入依赖js -->
+  <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+    <script type="text/javascript" src=".${htmlWebpackPlugin.files.chunks[chunk].entry}" th:src="@{/resources${htmlWebpackPlugin.files.chunks[chunk].entry}}"></script>
+  <% } %>
 </body>
 </html>

@@ -105,8 +105,11 @@
 
 import Vue from 'vue'
 import {Tabs, Tab} from 'vue-tabs-component'
+import ElementUtil from '@/components/ElementUtil'
+
 Vue.component('tabs', Tabs)
 Vue.component('tab', Tab)
+Vue.component('ElementUtil', ElementUtil)
 
 export default {
   name: 'ListSearch',
@@ -120,7 +123,7 @@ export default {
       }
     },
     openPage: function (pageId) {
-      let path = '/info/' + pageId + '.html'
+      let path = ElementUtil.methods.getValueByid('HostUrl') + 'page/' + pageId + '.html'
       window.open(path)
     },
     skipPage: function (newPage) {
