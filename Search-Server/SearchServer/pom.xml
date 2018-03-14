@@ -2,21 +2,38 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>Search-Server</artifactId>
-  <parent>
-  	<groupId>com.fast.dev</groupId>
-  	<artifactId>PParent</artifactId>
-  	<version>0.0.1-SNAPSHOT</version>
-  </parent>
-  <dependencies>
-  	<dependency>
-  		<groupId>com.fast.dev</groupId>
-  		<artifactId>PCore</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.fast.dev</groupId>
-  		<artifactId>Template-thymeleaf</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
-  </dependencies>
+	<parent>
+		<groupId>com.fast.dev</groupId>
+		<artifactId>PParent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>com.fast.dev</groupId>
+			<artifactId>PCore</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fast.dev</groupId>
+			<artifactId>Template-thymeleaf</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fast.dev</groupId>
+			<artifactId>Component-ElasticSearch</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>6.2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.elasticsearch.client</groupId>
+			<artifactId>transport</artifactId>
+			<version>6.2.2</version>
+		</dependency>
+
+	</dependencies>
 </project>
