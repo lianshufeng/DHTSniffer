@@ -131,6 +131,8 @@ export default {
     },
     requestSearch: function (keyWord, pageNum) {
       console.log('keyWord : ' + keyWord + ' page : ' + pageNum)
+      this.searchResult[0].title = '搜索：' + keyWord + ', 第 ' + pageNum + ' 页'
+      this.searchResult[1].title = '搜索：' + keyWord + ', 第 ' + pageNum + ' 页'
       // 需要请求成功后更改
       this.page.current = pageNum
       // 回到顶部
