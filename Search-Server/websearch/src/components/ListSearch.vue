@@ -28,7 +28,7 @@
         <div class="Search_result" v-for="item in searchResult" :key="item.id" >
           <!--  标题 -->
           <div class="Search_result_title"  v-on:click="openPage(item.id)" >
-            <span>{{item.title}}</span>
+            <span  v-html="item.title"></span>
           </div>
 
           <div class="Search_result_information">
@@ -106,10 +106,12 @@
 import Vue from 'vue'
 import {Tabs, Tab} from 'vue-tabs-component'
 import ElementUtil from '@/components/ElementUtil'
+import ajax from 'axios'
 
 Vue.component('tabs', Tabs)
 Vue.component('tab', Tab)
 Vue.component('ElementUtil', ElementUtil)
+Vue.component('ajax', ajax)
 
 export default {
   name: 'ListSearch',
@@ -131,12 +133,28 @@ export default {
     },
     requestSearch: function (keyWord, pageNum) {
       console.log('keyWord : ' + keyWord + ' page : ' + pageNum)
-      this.searchResult[0].title = '搜索：' + keyWord + ', 第 ' + pageNum + ' 页'
-      this.searchResult[1].title = '搜索：' + keyWord + ', 第 ' + pageNum + ' 页'
-      // 需要请求成功后更改
-      this.page.current = pageNum
-      // 回到顶部
-      document.body.scrollTop = document.documentElement.scrollTop = 0
+      // this.searchResult[0].title = '搜索：' + keyWord + ', 第 ' + pageNum + ' 页'
+      // this.searchResult[1].title = '搜索：' + keyWord + ', 第 ' + pageNum + ' 页'
+      let size = 5
+      let me = this
+      let url = ElementUtil.methods.getValueByid('HostUrl') + 'store/search.json'
+      ajax.post(url,
+        'wd=' + keyWord + '&page=' + pageNum + '&size=' + size
+      ).then(function (data) {
+        let content = data.data.invokerResult.content
+        let _page = Math.floor(content.total / size)
+        // 计算总页数
+        me.page.total = Math.floor(content.total % size === 0 ? _page : _page + 1)
+        // 需要请求成功后更改
+        me.page.current = pageNum
+        console.log(content.datas)
+        // 更新数据到视图
+        me.searchResult = content.datas
+        // 回到顶部
+        document.body.scrollTop = document.documentElement.scrollTop = 0
+      }).catch(function (e) {
+        console.error(e)
+      })
     }
   },
   data () {
