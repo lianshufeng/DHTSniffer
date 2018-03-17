@@ -54,7 +54,7 @@
                 <span class="Page_Item_title" >收录时间：</span>
                 <span>{{ item.time }}</span>
               </p>
-              <p style="text-align:center;cursor: pointer;">
+              <p style="text-align:center;cursor: pointer;margin: 0 auto;">
                 <span v-on:click="openPage(item.id)" >浏览详情</span>
               </p>
               </div>
@@ -85,6 +85,130 @@
         </div>
       </div>
       <div class="Search_content_right">
+
+        <!--热词榜-->
+        <div class="RightTopList_top_list" >
+          <div >
+            <p class="RightTopList_content_right_title" >热词榜</p>
+          </div>
+          <div class="RightTopList_rank_title" >
+            <span class="RightTopList_float_left" >排名</span>
+            <span class="RightTopList_float_right" >指数</span>
+          </div>
+          <ul class="RightTopList_rank_list" >
+            <li >
+              <span class="RightTopList_float_left" >
+                <em class="RightTopList_rank_num_1 RightTopList_rank_num" >1</em>
+                <a href="#">美好生活</a>
+              </span>
+              <span class="RightTopList_float_right" >52349
+              </span>
+            </li>
+            <li >
+              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num_2 RightTopList_rank_num" >2</em>
+                <a href="#" >老男孩</a>
+              </span>
+              <span class="RightTopList_float_right" >
+                47699
+              </span>
+            </li>
+
+            <li >
+              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num_3 RightTopList_rank_num" >3</em>
+                <a href="#" >烈火如歌</a>
+              </span>
+              <span class="RightTopList_float_right" >
+                47699
+              </span>
+            </li>
+
+            <li >
+              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num" >4</em>
+                <a href="#" >利刃出击</a>
+              </span>
+            <span class="RightTopList_float_right" >
+                47699
+              </span>
+          </li>
+
+          <li >
+              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num" >5</em>
+                <a href="#" >迷雾</a>
+              </span>
+              <span class="RightTopList_float_right" >
+                47699
+              </span>
+          </li>
+          </ul>
+        </div>
+
+        <!--最新收录-->
+        <div class="RightTopList_top_list" >
+          <div >
+            <p class="RightTopList_content_right_title" >最新收录</p>
+          </div>
+          <div class="RightTopList_rank_title" >
+            <span class="RightTopList_float_left" >排名</span>
+            <span class="RightTopList_float_right" >时间</span>
+          </div>
+          <ul class="RightTopList_rank_list" >
+            <li >
+              <span class="RightTopList_float_left" >
+                <em class="RightTopList_rank_num_1 RightTopList_rank_num" >1</em>
+                <a href="#">星球大战8：最后的绝地武士</a>
+              </span>
+              <span class="RightTopList_float_right" >
+                2018-03-15
+              </span>
+            </li>
+            <li >
+              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num_2 RightTopList_rank_num" >2</em>
+                <a href="#" >王牌特工2：黄金圈</a>
+              </span>
+              <span class="RightTopList_float_right" >
+                2018-03-15
+              </span>
+            </li>
+
+            <li >
+              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num_3 RightTopList_rank_num" >3</em>
+                <a href="#" >湮灭/灭绝</a>
+              </span>
+              <span class="RightTopList_float_right" >
+                2018-03-14
+              </span>
+            </li>
+
+            <li >
+              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num" >4</em>
+                <a href="#" >前任3：再见前任</a>
+              </span>
+              <span class="RightTopList_float_right" >
+                2018-03-13
+              </span>
+            </li>
+
+            <li >
+              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num" >5</em>
+                <a href="#" >帕丁顿熊2</a>
+              </span>
+              <span class="RightTopList_float_right" >
+                2018-03-13
+              </span>
+            </li>
+
+            <li >
+              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num" >6</em>
+                <a href="#" >正义联盟</a>
+              </span>
+              <span class="RightTopList_float_right" >
+                2018-03-12
+              </span>
+            </li>
+
+          </ul>
+        </div>
+
       </div>
       <div class="clearfix" ></div>
     </div>
@@ -100,8 +224,6 @@
 </template>
 
 <script>
-// 引用ajax
-// import ajax from 'axios'
 
 import Vue from 'vue'
 import {Tabs, Tab} from 'vue-tabs-component'
@@ -135,7 +257,7 @@ export default {
       console.log('keyWord : ' + keyWord + ' page : ' + pageNum)
       // this.searchResult[0].title = '搜索：' + keyWord + ', 第 ' + pageNum + ' 页'
       // this.searchResult[1].title = '搜索：' + keyWord + ', 第 ' + pageNum + ' 页'
-      let size = 5
+      let size = 10
       let me = this
       let url = ElementUtil.methods.getValueByid('HostUrl') + 'store/search.json'
       ajax.post(url,
@@ -165,22 +287,14 @@ export default {
         current: 1
       },
       searchResult: [
-        {
-          id: 1,
-          types: ['压缩', '视频'],
-          title: 'test1',
-          size: '12.4G',
-          fileCount: 25,
-          time: '2017-09-06'
-        },
-        {
-          id: 2,
-          types: ['文档', '应用'],
-          title: 'test1',
-          size: '12.4G',
-          fileCount: 25,
-          time: '2017-09-06'
-        }
+        // {
+        //   id: 1,
+        //   types: ['压缩', '视频'],
+        //   title: 'test1',
+        //   size: '12.4G',
+        //   fileCount: 25,
+        //   time: '2017-09-06'
+        // }
       ]
     }
   },
@@ -192,6 +306,8 @@ export default {
   }
 }
 </script>
+
+
 
 <style scoped>
   .main {
@@ -251,12 +367,12 @@ export default {
     margin-top: 30px;
   }
   .Search_content_right {
-    width: 35%;
+    width: 40%;
     float: right;
     vertical-align: top;
     border-left: 1px solid #e1e1e1;
     padding-left: 30px;
-    /*padding-bottom: 20px;*/
+    padding-bottom: 20px;
   }
   .Search_content_left {
     width: 45%;
@@ -356,6 +472,89 @@ export default {
     }
   .hidden {
     display: none!important;
+  }
+
+  /*右侧内容*/
+  .RightTopList_top_list {
+    width: 360px;
+    margin-bottom: 30px;
+    margin-left: -10px;
+  }
+
+  .RightTopList_top_list , li , ul{
+    list-style: none;
+  }
+
+  .RightTopList_top_list .RightTopList_content_right_title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .RightTopList_float_left {
+    float: left;
+    width: 65%;
+  }
+  .RightTopList_float_right {
+    float: right;
+    width: 35%;
+    text-align: right;
+  }
+
+  .RightTopList_rank_list {
+    font-size: 13px;
+  }
+  .RightTopList_rank_title {
+    height: 32px;
+    line-height: 32px;
+    background-color: #fafafa;
+    color: #666;
+    font-weight: 400;
+    font-size: 13px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+
+
+  .RightTopList_rank_num {
+    display: inline-block;
+    padding: 1px 0;
+    color: #fff;
+    width: 14px;
+    line-height: 100%;
+    font-size: 12px;
+    text-align: center;
+    margin-right: 5px;
+    background-color: #8eb9f5;
+  }
+
+  em {
+    font-style: normal;
+  }
+  .RightTopList_rank_list li {
+    height: 32px;
+    line-height: 32px;
+    border-bottom: 1px solid #f0f0f0;
+    clear: both;
+  }
+
+  .RightTopList_top_list .RightTopList_rank_list a {
+    color:blue;
+    text-decoration: none;
+    outline: none;
+  }
+
+  .RightTopList_up_arrow {
+    color: #d40707;
+  }
+  .RightTopList_rank_num_1 {
+    background-color: #f54545;
+  }
+  .RightTopList_rank_num_2 {
+    background-color: #ff8547;
+  }
+  .RightTopList_rank_num_3 {
+    background-color: #ffac38;
   }
 
 </style>
