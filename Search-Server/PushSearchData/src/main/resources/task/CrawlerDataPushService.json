@@ -1,0 +1,10 @@
+{
+	"mongo": {
+		"host": [
+			"106.75.134.74:8818"
+		],
+		"dbName": "crawler"
+	},
+	"className": "CrawlerDataPushService",
+	"corn": "0/2 * * * * ?"
+}
