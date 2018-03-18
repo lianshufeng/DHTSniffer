@@ -1,10 +1,14 @@
 package com.fast.dev.search.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javax.annotation.PreDestroy;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,18 +20,40 @@ import com.fast.dev.es.query.QueryRecord;
 import com.fast.dev.es.query.QueryResult;
 import com.fast.dev.search.dao.RecordDao;
 import com.fast.dev.search.domain.Record;
+import com.fast.dev.search.helper.YouDaoWordHelper;
 import com.fast.dev.search.model.PushData;
 import com.fast.dev.search.model.SearchRecord;
 import com.fast.dev.search.model.SearchResult;
 import com.fast.dev.search.util.FileTypeUtil;
 import com.fast.dev.search.util.FormatUtil;
-import com.fast.dev.search.util.StringSplit;
 
 @Service
 public class RecordService {
 
 	@Autowired
 	private RecordDao recordDao;
+
+	@Autowired
+	private YouDaoWordHelper wordHelper;
+
+	// 线程池
+	private static ExecutorService saveDataThreadPool = Executors.newFixedThreadPool(10);
+
+	// 销毁线程池
+	@PreDestroy
+	private void shutdown() {
+		saveDataThreadPool.shutdownNow();
+	}
+
+	/**
+	 * 查询
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public Map<String, Object> page(String id) {
+		return recordDao.get(id);
+	}
 
 	/**
 	 * 搜索
@@ -50,12 +76,32 @@ public class RecordService {
 	 * @param datas
 	 */
 	public Collection<String> save(Collection<PushData> datas) {
-		List<Record> records = new ArrayList<>();
-		for (PushData data : datas) {
-			Record record = toRecord(data);
-			if (record != null) {
-				records.add(record);
-			}
+		final List<Record> records = new ArrayList<>();
+		// 计次
+		final CountDownLatch countDownLatch = new CountDownLatch(datas.size());
+		for (final PushData data : datas) {
+			// 启动线程池
+			saveDataThreadPool.execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Record record = toRecord(data);
+						if (record != null) {
+							records.add(record);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						countDownLatch.countDown();
+					}
+				}
+			});
+		}
+		// 等待执行完成
+		try {
+			countDownLatch.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 		return this.recordDao.save(records);
 	}
@@ -106,19 +152,19 @@ public class RecordService {
 	private void setRecordIndex(final Record record, final PushData data) {
 		List<String> indexNames = new ArrayList<>();
 		// 标题
-		indexNames.addAll(toIndexNames(data.getTitle()));
+		indexNames.add(toIndexNames(record.getTitle()));
 		// URL
-		indexNames.addAll(toIndexNames(FilenameUtils.getBaseName(data.getUrl())));
+		indexNames.add(toIndexNames(FilenameUtils.getBaseName(data.getUrl())));
 		// 文件列表
 		if (data.getFiles() != null) {
 			for (String filePath : data.getFiles().keySet()) {
-				indexNames.addAll(toIndexNames(filePath));
+				indexNames.add(toIndexNames(FilenameUtils.getBaseName(filePath)));
 			}
 		}
 		// 转换为索引名
 		StringBuilder sb = new StringBuilder();
 		for (String indexName : indexNames) {
-			sb.append(indexName +" ");
+			sb.append(indexName + " ");
 		}
 		record.setIndex(sb.toString());
 	}
@@ -128,9 +174,8 @@ public class RecordService {
 	 * 
 	 * @return
 	 */
-
-	private Collection<String> toIndexNames(final String name) {
-		 return  new ArrayList<>(Arrays.asList(StringSplit.split(name)));
+	private String toIndexNames(final String name) {
+		return this.wordHelper.translation(name);
 	}
 
 	/**
@@ -207,7 +252,6 @@ public class RecordService {
 			long createTime = Long.valueOf(String.valueOf(source.get("createTime")));
 			searchRecord.setTime(FormatUtil.formatTime(createTime));
 		}
-
 		// 文件数量
 		if (source.containsKey("files")) {
 			Map<String, Long> files = (Map<String, Long>) source.get("files");
@@ -228,8 +272,7 @@ public class RecordService {
 	}
 
 	public static void main(String[] args) throws Exception {
-		PushData data = new PushData(
-				"Black.Mirror.3x02.Giochi.Pericolosi.ITA.ENG.720p.WEBMux.x264-Speranzah.mkv",
+		PushData data = new PushData("Black.Mirror.3x02.Giochi.Pericolosi.ITA.ENG.720p.WEBMux.x264-Speranzah.mkv",
 				"http://baidu.com/hao123.txt", null, null);
 		System.out.println(JsonUtil.toJson(new RecordService().toRecord(data)));
 	}

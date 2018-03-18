@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<title th:text="${record.title}">标题</title>
+</head>
+<body>
+	<h1 th:text="${record.title}"></h1>
+	<div th:each="r:${record}">
+		<div th:text="${r}"></div>
+	</div>
+</body>
+</html>

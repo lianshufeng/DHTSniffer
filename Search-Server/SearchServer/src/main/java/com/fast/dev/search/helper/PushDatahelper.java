@@ -61,10 +61,10 @@ public class PushDatahelper {
 		}
 	}
 
-	@Scheduled(cron = "*/5 * * * * ?")
+	@Scheduled(cron = "*/10 * * * * ?")
 	public void executeTask() {
 		List<?> keys = DataCache.getKeys();
-		if (task(keys)) {
+		if (keys != null && keys.size() > 0 && task(keys)) {
 			DataCache.removeAll(keys);
 		}
 	}
@@ -77,11 +77,20 @@ public class PushDatahelper {
 	 */
 	private boolean task(List<?> keys) {
 		try {
+			// 缓存
 			List<PushData> datas = new ArrayList<>();
 			for (Element element : DataCache.getAll(keys).values()) {
 				datas.add((PushData) element.getObjectValue());
+				// 每20条存一下
+				if (datas.size() >= 20) {
+					recordService.save(datas);
+					datas.clear();
+				}
 			}
-			recordService.save(datas);
+			// 保存剩余的数据
+			if (datas.size() > 0) {
+				recordService.save(datas);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -20,6 +20,24 @@ import com.fast.dev.search.domain.Record;
 public class RecordDao extends SuperDao<Record> {
 
 	/**
+	 * 取出对应数据
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> get(String id) {
+		Map<String, Object> m = esDao.get(id);
+		if (m != null && m.size() > 0) {
+			Object[] objects = m.values().toArray();
+			if (objects != null && objects.length > 0) {
+				return (Map<String, Object>) objects[0];
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * 保存数据
 	 * 
 	 * @param record
