@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * 推送的数据实体
+ * 推送的数据实体,URL必填
  * 
  * @作者 练书锋
  * @时间 2018年3月18日
@@ -12,14 +12,14 @@ import java.util.Map;
  *
  */
 public class PushData implements Serializable {
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	// 标题
 	String title;
-	// 下载地址
+	// 下载地址,必填！！
 	String url;
 	// 发布时间
 	Long time;

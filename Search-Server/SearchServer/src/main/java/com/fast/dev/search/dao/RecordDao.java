@@ -1,7 +1,9 @@
 package com.fast.dev.search.dao;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Repository;
@@ -16,6 +18,20 @@ import com.fast.dev.search.domain.Record;
 
 @Repository
 public class RecordDao extends SuperDao<Record> {
+
+	/**
+	 * 保存数据
+	 * 
+	 * @param record
+	 * @return
+	 */
+	public Collection<String> save(Collection<Record> records) {
+		Map<String, String> result = esDao.save(records.toArray());
+		if (result != null) {
+			return new ArrayList<>(result.keySet());
+		}
+		return null;
+	}
 
 	/**
 	 * 分页查询

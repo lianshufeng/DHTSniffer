@@ -21,6 +21,8 @@ public class Record {
 	private Map<String, Long> files;
 	// 文件尺寸
 	private long totalSize;
+	// 发布时间
+	private long publishTime;
 	// 创建时间
 	private long createTime;
 	// 当前数据点击次数
@@ -129,6 +131,14 @@ public class Record {
 	 */
 	public void setHitCount(long hitCount) {
 		this.hitCount = hitCount;
+	}
+
+	public long getPublishTime() {
+		return publishTime;
+	}
+
+	public void setPublishTime(long publishTime) {
+		this.publishTime = publishTime;
 	}
 
 }
