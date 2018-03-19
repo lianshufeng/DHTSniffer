@@ -2,11 +2,14 @@ package com.fast.dev.search.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,7 @@ import com.fast.dev.search.util.StringSplit;
 
 @Service
 public class RecordService {
+	private static final Logger LOG = Logger.getLogger(RecordService.class);
 
 	@Autowired
 	private RecordDao recordDao;
@@ -63,6 +67,7 @@ public class RecordService {
 	 * @param datas
 	 */
 	public Collection<String> save(Collection<PushData> datas) {
+		LOG.info(String.format("save : [%s]", datas.size()));
 		final List<Record> records = new ArrayList<>();
 		for (final PushData data : datas) {
 			Record record = toRecord(data);
@@ -95,7 +100,7 @@ public class RecordService {
 		// 设置发布时间
 		setRecordTime(record, data);
 		// 设置文件列表
-		setRecordFiles(record, data);
+		 setRecordFiles(record, data);
 		// 设置索引关键词
 		setRecordIndex(record, data);
 		return record;
@@ -108,7 +113,16 @@ public class RecordService {
 	 * @param data
 	 */
 	private void setRecordFiles(final Record record, final PushData data) {
-		record.setFiles(data.getFiles());
+		// 文件列表
+//		record.setFiles(data.getFiles());
+		// 设置文件总长度
+		if (data.getFiles() != null) {
+			long totalSize = 0;
+			for (long fileSize : data.getFiles().values()) {
+				totalSize += fileSize;
+			}
+			record.setTotalSize(totalSize);
+		}
 	}
 
 	/**
@@ -118,15 +132,15 @@ public class RecordService {
 	 * @param data
 	 */
 	private void setRecordIndex(final Record record, final PushData data) {
-		List<String> indexNames = new ArrayList<>();
+		Set<String> indexNames = new HashSet<>();
 		// 标题
-		indexNames.add(toIndexNames(record.getTitle()));
+		toIndexNames(indexNames, record.getTitle());
 		// URL
-		indexNames.add(toIndexNames(FilenameUtils.getBaseName(data.getUrl())));
+		toIndexNames(indexNames, FilenameUtils.getBaseName(data.getUrl()));
 		// 文件列表
 		if (data.getFiles() != null) {
 			for (String filePath : data.getFiles().keySet()) {
-				indexNames.add(toIndexNames(FilenameUtils.getBaseName(filePath)));
+				toIndexNames(indexNames, FilenameUtils.getBaseName(filePath));
 			}
 		}
 		// 转换为索引名
@@ -142,24 +156,19 @@ public class RecordService {
 	 * 
 	 * @return
 	 */
-	private String toIndexNames(final String name) {
-		if (name == null) {
-			return null;
-		}
-		List<String> result = new ArrayList<>();
+	private void toIndexNames(final Set<String> indexNames, final String name) {
 		for (String str : StringSplit.split(name)) {
 			try {
 				// 处理拼音
 				String[] pinArray = PinyinTool.toPinYinArray(str);
 				// 首字母拼音
-				result.add(PinyinTool.getFirstStr(pinArray));
+				indexNames.add(PinyinTool.getFirstStr(pinArray));
 				// 全拼
-				result.add(PinyinTool.toText(pinArray));
+				indexNames.add(PinyinTool.toText(pinArray));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		return StringSplit.join(" ", result);
 	}
 
 	/**
@@ -225,7 +234,7 @@ public class RecordService {
 		// 标题
 		if (highLight.get("title") != null) {
 			searchRecord.setTitle(String.valueOf(highLight.get("title").toArray()[0]));
-		}else {
+		} else {
 			searchRecord.setTitle(String.valueOf(source.get("title")));
 		}
 
@@ -235,11 +244,13 @@ public class RecordService {
 			searchRecord.setSize(FormatUtil.formatSize(totalSize));
 		}
 
-		// 文件创建时间
+		// 文件创建时间,优先发布时间，发布时间为空则用创建时间
 		if (source.get("publishTime") != null) {
-			long createTime = Long.valueOf(String.valueOf(source.get("publishTime")));
-			searchRecord.setTime(FormatUtil.formatTime(createTime));
+			long time = Long.parseLong(String.valueOf(source.get("publishTime")));
+			time = time > 0 ? time : Long.parseLong(String.valueOf(source.get("createTime")));
+			searchRecord.setTime(FormatUtil.formatTime(time));
 		}
+
 		// 文件数量
 		if (source.get("files") != null) {
 			Map<String, Long> files = (Map<String, Long>) source.get("files");

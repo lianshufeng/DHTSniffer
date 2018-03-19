@@ -77,7 +77,7 @@ public class RecordDao extends SuperDao<Record> {
 
 		// 排序
 		List<QuerySort> querySorts = new ArrayList<>();
-		querySorts.add(new QuerySort("hitCount", SortOrder.DESC));
+//		querySorts.add(new QuerySort("hitCount", SortOrder.DESC));
 		querySorts.add(new QuerySort("createTime", SortOrder.DESC));
 
 		// 高亮规则

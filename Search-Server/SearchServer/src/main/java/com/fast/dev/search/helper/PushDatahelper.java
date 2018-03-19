@@ -1,9 +1,11 @@
 package com.fast.dev.search.helper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.annotation.PreDestroy;
 
@@ -81,14 +83,14 @@ public class PushDatahelper {
 	 */
 	private boolean task(List<?> keys) {
 		LOG.info("Push Data : " + keys.size());
+
 		try {
 			// 缓存
 			List<PushData> datas = new ArrayList<PushData>();
 			for (Element element : DataCache.getAll(keys).values()) {
 				datas.add((PushData) element.getObjectValue());
-				// 每100条存一下
-				if (datas.size() >= 100) {
-					recordService.save(datas);
+				if (datas.size() >= 500) {
+					recordService.save(new ArrayList<>(datas));
 					datas.clear();
 				}
 			}

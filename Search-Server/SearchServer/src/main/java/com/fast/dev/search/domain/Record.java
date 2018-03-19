@@ -25,8 +25,6 @@ public class Record {
 	private long publishTime;
 	// 创建时间
 	private long createTime;
-	// 当前数据点击次数
-	private long hitCount;
 
 	/**
 	 * @return the title
@@ -116,21 +114,6 @@ public class Record {
 	 */
 	public void setCreateTime(long createTime) {
 		this.createTime = createTime;
-	}
-
-	/**
-	 * @return the hitCount
-	 */
-	public long getHitCount() {
-		return hitCount;
-	}
-
-	/**
-	 * @param hitCount
-	 *            the hitCount to set
-	 */
-	public void setHitCount(long hitCount) {
-		this.hitCount = hitCount;
 	}
 
 	public long getPublishTime() {

@@ -4,6 +4,14 @@ DELETE /resstore
 ### 创建索引库
 PUT /resstore
 
+### 设置设置最大
+PUT /resstore/_settings
+{
+  "index.mapping.total_fields.limit": 102400,
+  "index.refresh_interval": "120s"
+}
+
+
 ### 创建分词表与字段
 POST /resstore/Record/_mapping
 {

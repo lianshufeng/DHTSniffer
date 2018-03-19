@@ -40,7 +40,6 @@ public class CreateTestData {
 
 		Record record = new Record();
 		record.setCreateTime(System.currentTimeMillis());
-		record.setHitCount(1);
 		record.setIndex(info);
 		record.setTitle(info);
 		record.setUrl("http://url.com/dl.html");
