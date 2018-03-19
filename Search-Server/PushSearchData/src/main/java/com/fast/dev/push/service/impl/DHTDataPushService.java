@@ -19,7 +19,7 @@ public class DHTDataPushService extends DataPushService {
 
 	@Override
 	public void execute() {
-		initMongodb();
+//		initMongodb();
 		
 	}
 

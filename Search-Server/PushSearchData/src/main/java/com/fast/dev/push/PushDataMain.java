@@ -8,13 +8,15 @@ import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.fast.dev.core.util.code.JsonUtil;
+import com.fast.dev.push.conf.HostServerConfig;
 import com.fast.dev.push.conf.PushDataServiceConfig;
 import com.fast.dev.push.service.DataPushService;
 import com.fast.dev.push.timer.TimerManager;
-	
+
 public class PushDataMain {
 
 	private static final AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
@@ -22,6 +24,9 @@ public class PushDataMain {
 	static ScheduledExecutorService threadPool = null;
 
 	public static void main(String[] args) throws Exception {
+		// 注册配置到spring中
+		ConfigurableListableBeanFactory configurableListableBeanFactory = applicationContext.getBeanFactory();
+		configurableListableBeanFactory.registerSingleton("hostServerConfig", hostServerConfig());
 		applicationContext.scan("com.fast.dev");
 		applicationContext.refresh();
 		Collection<PushDataServiceConfig> configs = pushDataServiceConfigs();
@@ -39,7 +44,12 @@ public class PushDataMain {
 
 	@SuppressWarnings("unchecked")
 	private static Class<DataPushService> readClass(PushDataServiceConfig config) throws ClassNotFoundException {
-		return (Class<DataPushService>) Class.forName(DataPushService.class.getPackage().getName()+".impl."+config.getClassName());
+		return (Class<DataPushService>) Class
+				.forName(DataPushService.class.getPackage().getName() + ".impl." + config.getClassName());
+	}
+
+	private static HostServerConfig hostServerConfig() throws Exception {
+		return JsonUtil.loadToObject("HostServerConfig.json", HostServerConfig.class);
 	}
 
 	/**

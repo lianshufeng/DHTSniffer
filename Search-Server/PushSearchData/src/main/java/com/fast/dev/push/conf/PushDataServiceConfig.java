@@ -2,6 +2,9 @@ package com.fast.dev.push.conf;
 
 public class PushDataServiceConfig {
 
+	// 表名
+	private String collectionName;
+
 	// mongodb配置
 	private MongodbConfig mongo;
 
@@ -56,8 +59,17 @@ public class PushDataServiceConfig {
 		this.corn = corn;
 	}
 
-	public PushDataServiceConfig(MongodbConfig mongo, String className, String corn) {
+	public String getCollectionName() {
+		return collectionName;
+	}
+
+	public void setCollectionName(String collectionName) {
+		this.collectionName = collectionName;
+	}
+
+	public PushDataServiceConfig(String collectionName, MongodbConfig mongo, String className, String corn) {
 		super();
+		this.collectionName = collectionName;
 		this.mongo = mongo;
 		this.className = className;
 		this.corn = corn;

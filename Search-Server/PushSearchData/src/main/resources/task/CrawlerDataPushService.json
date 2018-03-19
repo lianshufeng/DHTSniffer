@@ -1,7 +1,8 @@
 {
+	"collectionName":"resources",
 	"mongo": {
 		"host": [
-			"106.75.134.74:8818"
+			"127.0.0.1:27017"
 		],
 		"dbName": "crawler"
 	},
