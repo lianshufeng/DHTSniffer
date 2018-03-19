@@ -4,18 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import javax.annotation.PreDestroy;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fast.dev.core.util.code.JsonUtil;
 import com.fast.dev.es.query.QueryRecord;
 import com.fast.dev.es.query.QueryResult;
 import com.fast.dev.search.dao.RecordDao;
@@ -26,6 +20,8 @@ import com.fast.dev.search.model.SearchRecord;
 import com.fast.dev.search.model.SearchResult;
 import com.fast.dev.search.util.FileTypeUtil;
 import com.fast.dev.search.util.FormatUtil;
+import com.fast.dev.search.util.PinyinTool;
+import com.fast.dev.search.util.StringSplit;
 
 @Service
 public class RecordService {
@@ -35,15 +31,6 @@ public class RecordService {
 
 	@Autowired
 	private YouDaoWordHelper wordHelper;
-
-	// 线程池
-	private static ExecutorService saveDataThreadPool = Executors.newFixedThreadPool(10);
-
-	// 销毁线程池
-	@PreDestroy
-	private void shutdown() {
-		saveDataThreadPool.shutdownNow();
-	}
 
 	/**
 	 * 查询
@@ -77,33 +64,14 @@ public class RecordService {
 	 */
 	public Collection<String> save(Collection<PushData> datas) {
 		final List<Record> records = new ArrayList<>();
-		// 计次
-		final CountDownLatch countDownLatch = new CountDownLatch(datas.size());
 		for (final PushData data : datas) {
-			// 启动线程池
-			saveDataThreadPool.execute(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						Record record = toRecord(data);
-						if (record != null) {
-							records.add(record);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					} finally {
-						countDownLatch.countDown();
-					}
-				}
-			});
+			Record record = toRecord(data);
+			if (record != null) {
+				records.add(record);
+			}
 		}
-		// 等待执行完成
-		try {
-			countDownLatch.await();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return this.recordDao.save(records);
+		Collection<String> result = this.recordDao.save(records);
+		return result;
 	}
 
 	/**
@@ -175,7 +143,23 @@ public class RecordService {
 	 * @return
 	 */
 	private String toIndexNames(final String name) {
-		return this.wordHelper.translation(name);
+		if (name == null) {
+			return null;
+		}
+		List<String> result = new ArrayList<>();
+		for (String str : StringSplit.split(name)) {
+			try {
+				// 处理拼音
+				String[] pinArray = PinyinTool.toPinYinArray(str);
+				// 首字母拼音
+				result.add(PinyinTool.getFirstStr(pinArray));
+				// 全拼
+				result.add(PinyinTool.toText(pinArray));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return StringSplit.join(" ", result);
 	}
 
 	/**
@@ -239,21 +223,25 @@ public class RecordService {
 		SearchRecord searchRecord = new SearchRecord();
 		searchRecord.setId(queryRecord.getId());
 		// 标题
-		searchRecord.setTitle(String.valueOf(highLight.get("title").toArray()[0]));
+		if (highLight.get("title") != null) {
+			searchRecord.setTitle(String.valueOf(highLight.get("title").toArray()[0]));
+		}else {
+			searchRecord.setTitle(String.valueOf(source.get("title")));
+		}
 
 		// 文件总长度
-		if (source.containsKey("totalSize")) {
+		if (source.get("totalSize") != null) {
 			long totalSize = Long.valueOf(String.valueOf(source.get("totalSize")));
 			searchRecord.setSize(FormatUtil.formatSize(totalSize));
 		}
 
 		// 文件创建时间
-		if (source.containsKey("createTime")) {
-			long createTime = Long.valueOf(String.valueOf(source.get("createTime")));
+		if (source.get("publishTime") != null) {
+			long createTime = Long.valueOf(String.valueOf(source.get("publishTime")));
 			searchRecord.setTime(FormatUtil.formatTime(createTime));
 		}
 		// 文件数量
-		if (source.containsKey("files")) {
+		if (source.get("files") != null) {
 			Map<String, Long> files = (Map<String, Long>) source.get("files");
 			searchRecord.setFileCount(files.size());
 			List<String> fileTypes = new ArrayList<>();
@@ -269,12 +257,6 @@ public class RecordService {
 			searchRecord.setFileCount(0);
 		}
 		return searchRecord;
-	}
-
-	public static void main(String[] args) throws Exception {
-		PushData data = new PushData("Black.Mirror.3x02.Giochi.Pericolosi.ITA.ENG.720p.WEBMux.x264-Speranzah.mkv",
-				"http://baidu.com/hao123.txt", null, null);
-		System.out.println(JsonUtil.toJson(new RecordService().toRecord(data)));
 	}
 
 }

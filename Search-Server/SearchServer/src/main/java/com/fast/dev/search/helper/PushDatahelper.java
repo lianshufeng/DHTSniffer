@@ -1,11 +1,13 @@
 package com.fast.dev.search.helper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.PreDestroy;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,6 +32,8 @@ import net.sf.ehcache.Element;
 @Component
 @EnableScheduling
 public class PushDatahelper {
+
+	private static final Logger LOG = Logger.getLogger(PushDatahelper.class);
 
 	private final static String CacheName = "PushDataCache";
 	private final static CacheManager CacheMgr = CacheManager.create();
@@ -76,13 +80,14 @@ public class PushDatahelper {
 	 * @return
 	 */
 	private boolean task(List<?> keys) {
+		LOG.info("Push Data : " + keys.size());
 		try {
 			// 缓存
-			List<PushData> datas = new ArrayList<>();
+			List<PushData> datas = new ArrayList<PushData>();
 			for (Element element : DataCache.getAll(keys).values()) {
 				datas.add((PushData) element.getObjectValue());
-				// 每20条存一下
-				if (datas.size() >= 20) {
+				// 每100条存一下
+				if (datas.size() >= 100) {
 					recordService.save(datas);
 					datas.clear();
 				}

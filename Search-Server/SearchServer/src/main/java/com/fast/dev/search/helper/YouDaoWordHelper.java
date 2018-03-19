@@ -15,8 +15,8 @@ public class YouDaoWordHelper {
 	private String pk;
 
 	@Autowired
+	@SuppressWarnings("unchecked")
 	private void init() throws Exception {
-		@SuppressWarnings("unchecked")
 		Map<String, String> youdao = JsonUtil.loadToObject("youdao.json", Map.class);
 		ak = youdao.get("ak");
 		pk = youdao.get("pk");
