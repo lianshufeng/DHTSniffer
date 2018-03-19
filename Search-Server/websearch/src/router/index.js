@@ -16,6 +16,11 @@ var router = new Router({
       path: '/s/:wd',
       name: 'ListSearch',
       component: ListSearch
+    },
+    {
+      path: '/s',
+      name: 'ListSearch',
+      component: ListSearch
     }
   ]
 })

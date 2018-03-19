@@ -15,9 +15,6 @@ export default {
   name: 'MainSearch',
   methods: {
     search: function () {
-      if (this.wd === '' || this.wd == null) {
-        return
-      }
       let route = {
         path: '/s/' + this.wd
       }

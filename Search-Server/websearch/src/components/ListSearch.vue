@@ -265,6 +265,7 @@ export default {
       ).then(function (data) {
         // 刷新数据
         let content = data.data.invokerResult.content
+        console.log(content.total)
         // 限制UI最多显示的记录数
         if (content.total > 300) {
           content.total = 300
@@ -274,7 +275,6 @@ export default {
         me.page.total = Math.floor(content.total % size === 0 ? _page : _page + 1)
         // 需要请求成功后更改
         me.page.current = pageNum
-        console.log(content.datas)
         // 更新数据到视图
         me.searchResult = content.datas
         // 回到顶部
@@ -305,13 +305,12 @@ export default {
   },
   mounted: function () {
     // 进行赋值
-    this.wd = this.$route.params.wd
+    this.wd = typeof (this.$route.params.wd) === 'undefined' ? '' : this.$route.params.wd
     // 首次载入进行搜索
     this.requestSearch(this.wd, 1)
   }
 }
 </script>
-
 
 
 <style scoped>
