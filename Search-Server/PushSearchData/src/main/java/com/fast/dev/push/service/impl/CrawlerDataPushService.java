@@ -24,7 +24,7 @@ public class CrawlerDataPushService extends DataPushService {
 
 	@Override
 	public void execute() {
-		Collection<Map<String, Object>> result = readRecords(50);
+		Collection<Map<String, Object>> result = readRecords();
 		if (result != null && result.size() > 0) {
 			// 转换并推送数据
 			super.post(toPushData(result));
@@ -41,6 +41,7 @@ public class CrawlerDataPushService extends DataPushService {
 		Collection<PushData> pushDatas = new ArrayList<>();
 		for (Map<String, Object> item : result) {
 			PushData data = new PushData();
+			data.setId(String.valueOf(item.get("_id")));
 			Object url = item.get("url");
 			Object title = item.get("title");
 			Object time = item.get("publishTime");

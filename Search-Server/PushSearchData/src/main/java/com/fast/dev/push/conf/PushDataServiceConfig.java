@@ -14,6 +14,9 @@ public class PushDataServiceConfig {
 	// 表达式
 	private String corn;
 
+	// 每次读取数据量
+	private int readSize = 10;
+
 	/**
 	 * @return the mongo
 	 */
@@ -67,12 +70,12 @@ public class PushDataServiceConfig {
 		this.collectionName = collectionName;
 	}
 
-	public PushDataServiceConfig(String collectionName, MongodbConfig mongo, String className, String corn) {
-		super();
-		this.collectionName = collectionName;
-		this.mongo = mongo;
-		this.className = className;
-		this.corn = corn;
+	public int getReadSize() {
+		return readSize;
+	}
+
+	public void setReadSize(int readSize) {
+		this.readSize = readSize;
 	}
 
 	public PushDataServiceConfig() {

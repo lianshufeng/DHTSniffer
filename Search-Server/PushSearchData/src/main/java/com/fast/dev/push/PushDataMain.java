@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -44,10 +45,15 @@ public class PushDataMain {
 
 	@SuppressWarnings("unchecked")
 	private static Class<DataPushService> readClass(PushDataServiceConfig config) throws ClassNotFoundException {
-		return (Class<DataPushService>) Class
-				.forName(DataPushService.class.getPackage().getName() + ".impl." + config.getClassName());
+		return (Class<DataPushService>) Class.forName(DataPushService.class.getPackage().getName() + ".impl." + config.getClassName());
 	}
 
+	/**
+	 * 读取主机配置
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	private static HostServerConfig hostServerConfig() throws Exception {
 		return JsonUtil.loadToObject("HostServerConfig.json", HostServerConfig.class);
 	}
@@ -62,10 +68,12 @@ public class PushDataMain {
 		List<PushDataServiceConfig> config = new ArrayList<>();
 		File[] files = new File(PushDataMain.class.getResource("/").getFile() + "/task/").listFiles();
 		for (File file : files) {
-			byte[] buff = FileUtils.readFileToByteArray(file);
-			PushDataServiceConfig pushDataServiceConfig = JsonUtil.toObject(new String(buff),
-					PushDataServiceConfig.class);
-			config.add(pushDataServiceConfig);
+			if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("json")) {
+				byte[] buff = FileUtils.readFileToByteArray(file);
+				PushDataServiceConfig pushDataServiceConfig = JsonUtil.toObject(new String(buff),
+						PushDataServiceConfig.class);
+				config.add(pushDataServiceConfig);
+			}
 		}
 		return config;
 	}

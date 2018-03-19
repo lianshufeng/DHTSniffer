@@ -1,5 +1,5 @@
 {
-	"collectionName":"resources",
+	"collectionName": "resources",
 	"mongo": {
 		"host": [
 			"127.0.0.1:27017"
@@ -7,5 +7,6 @@
 		"dbName": "crawler"
 	},
 	"className": "CrawlerDataPushService",
-	"corn": "0/2 * * * * ?"
+	"corn": "0/10 * * * * ?",
+	"readSize": 30
 }

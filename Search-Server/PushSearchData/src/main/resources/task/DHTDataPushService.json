@@ -1,0 +1,12 @@
+{
+	"collectionName": "torrent",
+	"mongo": {
+		"host": [
+			"127.0.0.1:27017"
+		],
+		"dbName": "dht"
+	},
+	"className": "DHTDataPushService",
+	"corn": "0/1 * * * * ?",
+	"readSize": 100
+}

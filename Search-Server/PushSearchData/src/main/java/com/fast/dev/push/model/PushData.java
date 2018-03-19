@@ -17,6 +17,9 @@ public class PushData implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	// id
+	private String id;
 	// 标题
 	String title;
 	// 下载地址,必填！！
@@ -58,12 +61,12 @@ public class PushData implements Serializable {
 		this.files = files;
 	}
 
-	public PushData(String title, String url, Long time, Map<String, Long> files) {
-		super();
-		this.title = title;
-		this.url = url;
-		this.time = time;
-		this.files = files;
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public PushData() {
