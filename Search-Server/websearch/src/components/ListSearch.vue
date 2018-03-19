@@ -51,7 +51,7 @@
                 <span>{{item.size}}</span>
               </p>
               <p class="Information_detail_information_Item" >
-                <span class="Page_Item_title" >收录时间：</span>
+                <span class="Page_Item_title" >发布时间：</span>
                 <span>{{ item.time }}</span>
               </p>
               <p style="text-align:center;cursor: pointer;margin: 0 auto;">
@@ -263,7 +263,12 @@ export default {
       ajax.post(url,
         'wd=' + keyWord + '&page=' + pageNum + '&size=' + size
       ).then(function (data) {
+        // 刷新数据
         let content = data.data.invokerResult.content
+        // 限制UI最多显示的记录数
+        if (content.total > 300) {
+          content.total = 300
+        }
         let _page = Math.floor(content.total / size)
         // 计算总页数
         me.page.total = Math.floor(content.total % size === 0 ? _page : _page + 1)
