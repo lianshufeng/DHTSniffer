@@ -23,7 +23,7 @@ import com.fast.dev.push.service.DataPushService;
 public class CrawlerDataPushService extends DataPushService {
 
 	@Override
-	public void execute() {
+	public synchronized void execute() {
 		Collection<Map<String, Object>> result = readRecords();
 		if (result != null && result.size() > 0) {
 			// 转换并推送数据

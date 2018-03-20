@@ -23,7 +23,7 @@ public class PushDataMain {
 	private static final AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
 
 	static ScheduledExecutorService threadPool = null;
-
+	
 	public static void main(String[] args) throws Exception {
 		// 注册配置到spring中
 		ConfigurableListableBeanFactory configurableListableBeanFactory = applicationContext.getBeanFactory();

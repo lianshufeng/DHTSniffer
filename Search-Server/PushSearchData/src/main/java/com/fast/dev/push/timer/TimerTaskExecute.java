@@ -10,7 +10,7 @@ import com.fast.dev.push.service.DataPushService;
 public class TimerTaskExecute implements Job {
 
 	@Override
-	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+	public  void execute(JobExecutionContext arg0) throws JobExecutionException {
 		JobDataMap jobDataMap = arg0.getMergedJobDataMap();
 		DataPushService dataPushService = (DataPushService) jobDataMap.get("object");
 		dataPushService.execute();

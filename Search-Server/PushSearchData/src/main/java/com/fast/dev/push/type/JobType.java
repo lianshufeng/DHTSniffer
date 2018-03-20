@@ -9,5 +9,5 @@ package com.fast.dev.push.type;
  *
  */
 public enum JobType {
-	Work, Finish
+	Work, Finish, Error
 }

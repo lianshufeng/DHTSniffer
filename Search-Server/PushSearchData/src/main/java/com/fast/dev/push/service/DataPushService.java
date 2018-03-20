@@ -14,7 +14,6 @@ import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
-import org.springframework.data.mongodb.core.index.IndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -28,7 +27,6 @@ import com.fast.dev.push.conf.PushDataServiceConfig;
 import com.fast.dev.push.factory.MongodbFactory;
 import com.fast.dev.push.model.PushData;
 import com.fast.dev.push.type.JobType;
-import com.mongodb.WriteResult;
 
 public abstract class DataPushService {
 
@@ -43,6 +41,9 @@ public abstract class DataPushService {
 	private HostServerConfig hostServerConfig;
 
 	protected PushDataServiceConfig pushConfig;
+
+	// 偏移每次读取量，失败就-1,成功+1
+	private int readOffSetCount = 0;
 
 	/**
 	 * 构建接口
@@ -105,18 +106,21 @@ public abstract class DataPushService {
 	 */
 	@SuppressWarnings("unchecked")
 	protected synchronized Collection<Map<String, Object>> readRecords() {
+
+		int limit = this.pushConfig.getReadSize() + this.readOffSetCount;
+
 		Query query = new Query();
 		query.addCriteria(new Criteria().orOperator(Criteria.where(ReadStat).is(null),
 				Criteria.where(ReadStat).is(JobType.Work)));
 		query.with(new Sort(new Order(Direction.ASC, ReadTime)));
-		query.limit(this.pushConfig.getReadSize());
+		query.limit(limit);
 
 		Update update = new Update();
 		update.set(ReadStat, JobType.Work);
 		update.set(ReadTime, System.currentTimeMillis());
 
 		List<Map<String, Object>> result = new ArrayList<>();
-		for (int i = 0; i < pushConfig.getReadSize(); i++) {
+		for (int i = 0; i < limit; i++) {
 			Map<String, Object> record = this.mongoTemplate.findAndModify(query, update, Map.class,
 					this.pushConfig.getCollectionName());
 			if (record != null) {
@@ -131,16 +135,15 @@ public abstract class DataPushService {
 	 * 
 	 * @param id
 	 */
-	protected void updateRecordStatFinish(String id) {
+	protected void updateRecordStat(String id, JobType jobType) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("_id").is(id));
 		query.limit(1);
 
 		Update update = new Update();
-		update.set(ReadStat, JobType.Finish);
+		update.set(ReadStat, jobType);
 
 		this.mongoTemplate.updateFirst(query, update, Map.class, this.pushConfig.getCollectionName());
-
 	}
 
 	/**
@@ -149,27 +152,99 @@ public abstract class DataPushService {
 	 * @param pushDatas
 	 */
 	@SuppressWarnings("unchecked")
-	protected boolean post(Collection<PushData> pushDatas) {
+	protected void post(Collection<PushData> pushDatas) {
+		if (pushDatas == null || pushDatas.size() == 0) {
+			return;
+		}
 		try {
-			String jsonContent = JsonUtil.toJson(pushDatas);
-			jsonContent = BytesUtil.binToHex(jsonContent.getBytes("UTF-8"));
-			byte[] bin = String.format("token=%s&content=%s", hostServerConfig.getToken(), jsonContent).getBytes();
+			String content = null;
+			try {
+				content = JsonUtil.toJson(pushDatas);
+				if (content.length() > 1024 * 1024 * 1.5 && pushDatas.size() > 1) {
+					List<PushData> datas = new ArrayList<>(pushDatas);
+					int toIndex = datas.size() / 2;
+					post(datas.subList(0, toIndex));
+					post(datas.subList(toIndex, datas.size() - 1));
+					return;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				return;
+			}
+			content = BytesUtil.binToHex(content.getBytes("UTF-8"));
+			byte[] bin = String.format("token=%s&content=%s", hostServerConfig.getToken(), content).getBytes();
 			HttpClient httpClient = new HttpClient();
 			byte[] buff = httpClient.post(hostServerConfig.getHostUrl(), bin);
 			String json = new String(buff, "UTF-8");
-			LOG.info("Post [" + pushDatas.size() + "] : " + json);
+			LOG.info(this.getClass().getSimpleName() + " Post [" + pushDatas.size() + "] : " + json);
 			Map<String, Map<String, String>> result = JsonUtil.toObject(json, Map.class);
-			if ("finish".equalsIgnoreCase(result.get("invokerResult").get("content"))) {
+			String stat = result.get("invokerResult").get("content");
+			if ("finish".equalsIgnoreCase(stat)) {
 				// 确认任务完成
 				for (PushData pushData : pushDatas) {
-					updateRecordStatFinish(pushData.getId());
+					updateRecordStat(pushData.getId(), JobType.Finish);
 				}
 			}
-			return true;
+			setReadOffSet(stat, pushDatas);
+			return;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		setReadOffSet(null, pushDatas);
+		return;
+	}
+
+	/**
+	 * 成功传递的参数
+	 */
+	private synchronized void setReadOffSet(String stat, Collection<PushData> pushDatas) {
+		// 取不到状态为服务器故障，不处理
+		if (stat == null) {
+			return;
+		}
+
+		// 保证最低读取一条
+		if (pushDatas.size() == 0 && "finish".equalsIgnoreCase(stat)) {
+			this.readOffSetCount = 1 - this.pushConfig.getReadSize();
+			return;
+		}
+		// 1条也失败，这条可能永远发出去了，设置该记录错误
+		if (!"finish".equalsIgnoreCase(stat) && pushDatas.size() == 1) {
+			setRecordError(pushDatas);
+			return;
+		}
+
+		// 发送成功则偏移+1
+		if (pushDatas.size() > 0 && "finish".equalsIgnoreCase(stat)) {
+			this.readOffSetCount++;
+			if (this.readOffSetCount > 0) {
+				this.readOffSetCount = 0;
+			}
+			return;
+		}
+
+		// 多条记录发送失败则下次自动读取少一条
+		if (pushDatas.size() > 0 && !"finish".equalsIgnoreCase(stat)) {
+			this.readOffSetCount--;
+			if (this.pushConfig.getReadSize() + this.readOffSetCount < 1) {
+				this.readOffSetCount = 1 - this.pushConfig.getReadSize();
+			}
+			return;
+		}
+
+	}
+
+	/**
+	 * 设置记录状态为错误
+	 * 
+	 * @param pushDatas
+	 */
+	private void setRecordError(Collection<PushData> pushDatas) {
+		for (PushData pushData : pushDatas) {
+			String id = pushData.getId();
+			updateRecordStat(id, JobType.Error);
+			LOG.info("error : " + id);
+		}
 	}
 
 }
