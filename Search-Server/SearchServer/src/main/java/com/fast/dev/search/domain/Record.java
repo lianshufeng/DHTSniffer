@@ -1,6 +1,8 @@
 package com.fast.dev.search.domain;
 
-import java.util.Map;
+import java.util.Set;
+
+import org.springframework.data.mongodb.core.index.Indexed;
 
 /**
  * 记录
@@ -11,14 +13,20 @@ import java.util.Map;
  *
  */
 public class Record {
+
+	// 数据ID
+	private String ref;
 	// 标题
 	private String title;
 	// 索引关键词
 	private String index;
 	// 原始下载地址
+	@Indexed(unique = true)
 	private String url;
 	// 文件列表
-	private Map<String, Long> files;
+	private int fileCount;
+	// 文件类型
+	private Set<String> fileType;
 	// 文件尺寸
 	private long totalSize;
 	// 发布时间
@@ -72,18 +80,18 @@ public class Record {
 	}
 
 	/**
-	 * @return the files
+	 * @return the fileCount
 	 */
-	public Map<String, Long> getFiles() {
-		return files;
+	public int getFileCount() {
+		return fileCount;
 	}
 
 	/**
-	 * @param files
-	 *            the files to set
+	 * @param fileCount
+	 *            the fileCount to set
 	 */
-	public void setFiles(Map<String, Long> files) {
-		this.files = files;
+	public void setFileCount(int fileCount) {
+		this.fileCount = fileCount;
 	}
 
 	/**
@@ -122,6 +130,36 @@ public class Record {
 
 	public void setPublishTime(long publishTime) {
 		this.publishTime = publishTime;
+	}
+
+	/**
+	 * @return the fileType
+	 */
+	public Set<String> getFileType() {
+		return fileType;
+	}
+
+	/**
+	 * @param fileType
+	 *            the fileType to set
+	 */
+	public void setFileType(Set<String> fileType) {
+		this.fileType = fileType;
+	}
+
+	/**
+	 * @return the ref
+	 */
+	public String getRef() {
+		return ref;
+	}
+
+	/**
+	 * @param ref
+	 *            the ref to set
+	 */
+	public void setRef(String ref) {
+		this.ref = ref;
 	}
 
 }

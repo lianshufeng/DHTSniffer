@@ -5,19 +5,24 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fast.dev.es.query.QueryRecord;
 import com.fast.dev.es.query.QueryResult;
 import com.fast.dev.search.dao.RecordDao;
+import com.fast.dev.search.dao.RecordInfoDao;
 import com.fast.dev.search.domain.Record;
+import com.fast.dev.search.domain.RecordInfo;
 import com.fast.dev.search.helper.YouDaoWordHelper;
+import com.fast.dev.search.model.FileModel;
 import com.fast.dev.search.model.PushData;
 import com.fast.dev.search.model.SearchRecord;
 import com.fast.dev.search.model.SearchResult;
@@ -34,6 +39,9 @@ public class RecordService {
 	private RecordDao recordDao;
 
 	@Autowired
+	private RecordInfoDao recordInfoDao;
+
+	@Autowired
 	private YouDaoWordHelper wordHelper;
 
 	/**
@@ -42,8 +50,8 @@ public class RecordService {
 	 * @param id
 	 * @return
 	 */
-	public Map<String, Object> page(String id) {
-		return recordDao.get(id);
+	public RecordInfo page(String id) {
+		return this.recordInfoDao.get(id);
 	}
 
 	/**
@@ -68,15 +76,29 @@ public class RecordService {
 	 */
 	public Collection<String> save(Collection<PushData> datas) {
 		LOG.info(String.format("save : [%s]", datas.size()));
-		final List<Record> records = new ArrayList<>();
+		List<Record> records = new ArrayList<>();
 		for (final PushData data : datas) {
-			Record record = toRecord(data);
-			if (record != null) {
-				records.add(record);
+			// 去除重复
+			if (!this.recordInfoDao.urlExits(data.getUrl())) {
+				// 需要先保存到本地mongodb里
+				Record record = toRecord(data);
+				if (record != null) {
+					records.add(record);
+				}
+			} else {
+				LOG.info(String.format("Skip Exits : [%s]", data.getUrl()));
 			}
 		}
-		Collection<String> result = this.recordDao.save(records);
-		return result;
+		return this.recordDao.save(records);
+		// final List<Record> records = new ArrayList<>();
+		// for (final PushData data : datas) {
+		// Record record = toRecord(data);
+		// if (record != null) {
+		// records.add(record);
+		// }
+		// }
+		// Collection<String> result = this.recordDao.save(records);
+		// return result;
 	}
 
 	/**
@@ -92,17 +114,24 @@ public class RecordService {
 			return null;
 		}
 		// 转换对象
-		Record record = new Record();
+		RecordInfo recordInfo = new RecordInfo();
 		// 设置URL
-		record.setUrl(url);
+		recordInfo.setUrl(url);
 		// 处理标题
-		setRecordTitle(record, data);
+		setRecordTitle(recordInfo, data);
 		// 设置发布时间
-		setRecordTime(record, data);
+		setRecordTime(recordInfo, data);
 		// 设置文件列表
-		 setRecordFiles(record, data);
+		setRecordFiles(recordInfo, data);
 		// 设置索引关键词
-		setRecordIndex(record, data);
+		setRecordIndex(recordInfo, data);
+		// 先入本地库
+		this.recordInfoDao.save(recordInfo);
+		// 拷贝对象
+		Record record = new Record();
+		BeanUtils.copyProperties(recordInfo, record);
+		// 保留需要关联的id
+		record.setRef(recordInfo.getId());
 		return record;
 	}
 
@@ -112,16 +141,31 @@ public class RecordService {
 	 * @param record
 	 * @param data
 	 */
-	private void setRecordFiles(final Record record, final PushData data) {
+	private void setRecordFiles(final RecordInfo record, final PushData data) {
 		// 文件列表
-//		record.setFiles(data.getFiles());
+		if (data.getFiles() != null) {
+			Collection<FileModel> files = new ArrayList<>();
+			for (Entry<String, Long> entry : data.getFiles().entrySet()) {
+				files.add(new FileModel(entry.getKey(), entry.getValue()));
+			}
+			record.setFiles(files);
+		}
 		// 设置文件总长度
 		if (data.getFiles() != null) {
 			long totalSize = 0;
-			for (long fileSize : data.getFiles().values()) {
-				totalSize += fileSize;
+			Set<String> fileTypes = new HashSet<>();
+			for (Entry<String, Long> file : data.getFiles().entrySet()) {
+				totalSize += file.getValue();
+				fileTypes.add(FilenameUtils.getExtension(file.getKey()));
 			}
+			// 文件类型
+			record.setFileType(fileTypes);
+			/// 文件长度
 			record.setTotalSize(totalSize);
+			// 文件总量
+			record.setFileCount(data.getFiles().size());
+		} else {
+			record.setFileCount(1);
 		}
 	}
 
@@ -230,7 +274,10 @@ public class RecordService {
 		Map<String, Collection<String>> highLight = queryRecord.getHighLight();
 
 		SearchRecord searchRecord = new SearchRecord();
-		searchRecord.setId(queryRecord.getId());
+		// 设置ID为mongodbId
+		if (source.get("ref") != null) {
+			searchRecord.setId(String.valueOf(source.get("ref")));
+		}
 		// 标题
 		if (highLight.get("title") != null) {
 			searchRecord.setTitle(String.valueOf(highLight.get("title").toArray()[0]));
@@ -251,21 +298,20 @@ public class RecordService {
 			searchRecord.setTime(FormatUtil.formatTime(time));
 		}
 
-		// 文件数量
-		if (source.get("files") != null) {
-			Map<String, Long> files = (Map<String, Long>) source.get("files");
-			searchRecord.setFileCount(files.size());
-			List<String> fileTypes = new ArrayList<>();
-			// 取出有哪些文件类型
-			for (String fileName : files.keySet()) {
-				String fileType = FileTypeUtil.query(fileName);
-				if (fileType != null && !fileTypes.contains(fileType)) {
-					fileTypes.add(fileType);
+		// 文件列表
+		if (source.get("fileCount") != null) {
+			searchRecord.setFileCount(Integer.parseInt(String.valueOf(source.get("fileCount"))));
+		}
+
+		if (source.get("fileType") != null) {
+			Set<String> fileTypeName = new HashSet<>();
+			for (String type : (Collection<String>) source.get("fileType")) {
+				String typeMark = FileTypeUtil.query(type);
+				if (typeMark != null) {
+					fileTypeName.add(typeMark);
 				}
 			}
-			searchRecord.setType(fileTypes.toArray(new String[0]));
-		} else {
-			searchRecord.setFileCount(0);
+			searchRecord.setType(fileTypeName.toArray(new String[0]));
 		}
 		return searchRecord;
 	}

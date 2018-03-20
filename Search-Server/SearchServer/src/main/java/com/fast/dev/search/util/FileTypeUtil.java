@@ -3,7 +3,6 @@ package com.fast.dev.search.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 
 public class FileTypeUtil {
@@ -16,6 +15,8 @@ public class FileTypeUtil {
 		{
 			put("zip", "压缩");
 			put("rar", "压缩");
+			put("7z", "压缩");
+			
 
 			put("wmv", "媒体");
 			put("rmvb", "媒体");
@@ -24,6 +25,9 @@ public class FileTypeUtil {
 			put("mp4", "媒体");
 			put("avi", "媒体");
 			put("flv", "媒体");
+			put("mp3", "媒体");
+			put("mkv", "媒体");
+			
 
 			put("exe", "应用");
 			put("dll", "应用");
@@ -52,12 +56,12 @@ public class FileTypeUtil {
 	 * @param fileName
 	 * @return
 	 */
-	public static String query(String fileName) {
-		String extName = FilenameUtils.getExtension(fileName);
+	public static String query(final String extName) {
 		if (StringUtils.isEmpty(extName)) {
 			return null;
 		}
-		return fileMap.get(extName.toLowerCase());
+		String text = fileMap.get(extName.toLowerCase());
+		return text == null ? "其他" : text;
 	}
 
 }
