@@ -90,15 +90,6 @@ public class RecordService {
 			}
 		}
 		return this.recordDao.save(records);
-		// final List<Record> records = new ArrayList<>();
-		// for (final PushData data : datas) {
-		// Record record = toRecord(data);
-		// if (record != null) {
-		// records.add(record);
-		// }
-		// }
-		// Collection<String> result = this.recordDao.save(records);
-		// return result;
 	}
 
 	/**
@@ -209,6 +200,8 @@ public class RecordService {
 				indexNames.add(PinyinTool.getFirstStr(pinArray));
 				// 全拼
 				indexNames.add(PinyinTool.toText(pinArray));
+				// 原始文字
+				indexNames.add(name);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

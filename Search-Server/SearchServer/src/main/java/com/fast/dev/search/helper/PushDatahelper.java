@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.fast.dev.core.util.code.JsonUtil;
 import com.fast.dev.search.dao.PushDataCacheDao;
 import com.fast.dev.search.domain.PushDataCache;
 import com.fast.dev.search.model.PushData;
@@ -40,23 +40,31 @@ public class PushDatahelper {
 	 * @param data
 	 */
 	public void push(PushData... datas) {
-		for (PushData data : datas) {
-			PushDataCache pushDataCache = new PushDataCache();
-			BeanUtils.copyProperties(data, pushDataCache);
-			this.dataCacheDao.save(pushDataCache);
+		for (PushData content : datas) {
+			try {
+				PushDataCache pushDataCache = new PushDataCache();
+				pushDataCache.setContent(JsonUtil.toJson(content));
+				this.dataCacheDao.save(pushDataCache);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	@Scheduled(cron = "*/10 * * * * ?")
 	public void executeTask() {
-		
-		
-//		this.dataCacheDao.(new Query().limit(500));
-		
-//		List<?> keys = DataCache.getKeys();
-//		if (keys != null && keys.size() > 0 && task(keys)) {
-//			DataCache.removeAll(keys);
-//		}
+		List<PushDataCache> dataCaches = this.dataCacheDao.getCache(1000);
+		if (dataCaches != null && dataCaches.size() > 0) {
+			List<PushData> datas = new ArrayList<>();
+			for (PushDataCache dataCache : dataCaches) {
+				try {
+					datas.add(JsonUtil.toObject(dataCache.getContent(), PushData.class));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			task(datas);
+		}
 	}
 
 	/**
@@ -65,26 +73,10 @@ public class PushDatahelper {
 	 * @param keys
 	 * @return
 	 */
-	private boolean task(List<?> keys) {
-		LOG.info("Push Data : " + keys.size());
-
+	private boolean task(List<PushData> datas) {
+		LOG.info("Push Data : " + datas.size());
 		try {
-			// 缓存
-			List<PushData> datas = new ArrayList<PushData>();
-
-//			for (Element element : DataCache.getAll(keys).values()) {
-//				datas.add((PushData) element.getObjectValue());
-//				if (datas.size() >= 500) {
-//					recordService.save(new ArrayList<>(datas));
-//					datas.clear();
-//				}
-//			}
-			
-			
-			// 保存剩余的数据
-			if (datas.size() > 0) {
-				recordService.save(datas);
-			}
+			this.recordService.save(datas);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

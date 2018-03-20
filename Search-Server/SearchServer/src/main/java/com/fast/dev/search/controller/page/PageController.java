@@ -1,11 +1,6 @@
 package com.fast.dev.search.controller.page;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
-
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
