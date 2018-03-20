@@ -7,6 +7,6 @@
 		"dbName": "dht"
 	},
 	"className": "DHTDataPushService",
-	"corn": "0/1 * * * * ?",
-	"readSize": 100
+	"corn": "0/5 * * * * ?",
+	"readSize": 50
 }

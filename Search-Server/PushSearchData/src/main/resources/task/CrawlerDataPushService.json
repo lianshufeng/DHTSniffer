@@ -7,6 +7,6 @@
 		"dbName": "crawler"
 	},
 	"className": "CrawlerDataPushService",
-	"corn": "0/10 * * * * ?",
+	"corn": "0/5 * * * * ?",
 	"readSize": 30
 }
