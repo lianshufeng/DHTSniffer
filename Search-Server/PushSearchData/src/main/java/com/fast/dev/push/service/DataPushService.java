@@ -2,8 +2,11 @@ package com.fast.dev.push.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,15 +122,16 @@ public abstract class DataPushService {
 		update.set(ReadStat, JobType.Work);
 		update.set(ReadTime, System.currentTimeMillis());
 
-		List<Map<String, Object>> result = new ArrayList<>();
+		// 防止取出多个相同的id的记录
+		Map<String, Map<String, Object>> result = new HashMap<>();
 		for (int i = 0; i < limit; i++) {
 			Map<String, Object> record = this.mongoTemplate.findAndModify(query, update, Map.class,
 					this.pushConfig.getCollectionName());
 			if (record != null) {
-				result.add(record);
+				result.put(String.valueOf(record.get("_id")), record);
 			}
 		}
-		return result;
+		return result.values();
 	}
 
 	/**
