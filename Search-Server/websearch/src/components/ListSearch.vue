@@ -92,7 +92,8 @@
           </div>
         </div>
       </div>
-      <div class="Search_content_right">
+
+      <div class="Search_content_right" ref="Search_content_right">
 
         <!--热词榜-->
         <div class="RightTopList_top_list" >
@@ -246,6 +247,9 @@ Vue.component('ajax', ajax)
 export default {
   name: 'ListSearch',
   methods: {
+    showRightContent: function (val) {
+      this.$refs.Search_content_right.style.display = val > 900 ? '' : 'none'
+    },
     beforeCurrentTotal: function (currentPage) {
       return (currentPage < 6 ? currentPage : 6) - 1
     },
@@ -315,18 +319,34 @@ export default {
         //   fileCount: 25,
         //   time: '2017-09-06'
         // }
-      ]
+      ],
+      screenWidth: document.body.clientWidth
     }
   },
   mounted: function () {
+    const me = this
     // 进行赋值
     this.wd = typeof (this.$route.params.wd) === 'undefined' ? '' : this.$route.params.wd
     // 首次载入进行搜索
     this.requestSearch(this.wd, 1)
+    // 进行监视分辨率发生变化
+    window.onresize = function () {
+      return (() => {
+        window.screenWidth = document.body.clientWidth
+        me.screenWidth = window.screenWidth
+      })()
+    }
+    this.showRightContent(me.screenWidth)
+  },
+  watch: {
+    screenWidth: function (val) {
+      this.screenWidth = val
+      // 显示右侧栏
+      this.showRightContent(val)
+    }
   }
 }
 </script>
-
 
 <style scoped>
   .main {
