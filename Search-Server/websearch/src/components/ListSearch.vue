@@ -250,6 +250,9 @@ export default {
       return (currentPage < 6 ? currentPage : 6) - 1
     },
     afterCurrentTotal: function (currentPage) {
+      if (this.page.total < currentPage) {
+        return 0
+      }
       let subPagr = (10 - currentPage - 1)
       subPagr = subPagr < 5 ? 5 : subPagr
       return (this.page.total - currentPage) > 5 ? subPagr : (this.page.total - currentPage)
@@ -281,7 +284,6 @@ export default {
       ).then(function (data) {
         // 刷新数据
         let content = data.data.invokerResult.content
-        console.log(content.total)
         // 限制UI最多显示的记录数
         let _page = Math.floor(content.total / size)
         // 计算总页数
