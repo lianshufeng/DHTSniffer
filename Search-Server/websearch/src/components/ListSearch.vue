@@ -68,13 +68,21 @@
             <template>
               <span class="Page_up_page" v-show="page.current > 1"  v-on:click="skipPage(page.current-1)" >上一页</span>
             </template>
-            <!-- 页码的渲染 -->
-            <template v-for="n in page.total"  >
-              <span v-if="n == page.current" :key="n" class="Page_current_page"  >
-                {{n}}
+            <!-- 页码的渲染-->
+            <!-- 前面页码 -->
+            <template v-for="n in beforeCurrentTotal(page.current) ">
+              <span :key="page.current - ( beforeCurrentTotal(page.current) - n  )-1"  v-on:click="skipPage( page.current - ( beforeCurrentTotal(page.current) - n  )-1 )">
+                {{  page.current - ( beforeCurrentTotal(page.current) - n  )-1  }}
               </span>
-              <span v-else :key="n" v-on:click="skipPage(n)">
-                {{n}}
+            </template>
+            <!-- 当前页 -->
+            <span  class="Page_current_page">
+                {{page.current}}
+            </span>
+            <!-- 后面的页码 -->
+            <template v-for="n in afterCurrentTotal(page.current) ">
+              <span :key="n + page.current"  v-on:click="skipPage(n + page.current)">
+                {{n+page.current}}
               </span>
             </template>
             <!-- 下一页的渲染 -->
@@ -238,6 +246,14 @@ Vue.component('ajax', ajax)
 export default {
   name: 'ListSearch',
   methods: {
+    beforeCurrentTotal: function (currentPage) {
+      return (currentPage < 6 ? currentPage : 6) - 1
+    },
+    afterCurrentTotal: function (currentPage) {
+      let subPagr = (10 - currentPage - 1)
+      subPagr = subPagr < 5 ? 5 : subPagr
+      return (this.page.total - currentPage) > 5 ? subPagr : (this.page.total - currentPage)
+    },
     search: function () {
       this.requestSearch(this.wd, 1)
     },
@@ -267,9 +283,6 @@ export default {
         let content = data.data.invokerResult.content
         console.log(content.total)
         // 限制UI最多显示的记录数
-        if (content.total > 300) {
-          content.total = 300
-        }
         let _page = Math.floor(content.total / size)
         // 计算总页数
         me.page.total = Math.floor(content.total % size === 0 ? _page : _page + 1)
