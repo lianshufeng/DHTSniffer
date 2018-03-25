@@ -2,6 +2,7 @@ package com.fast.dev.search.dao;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,12 +50,8 @@ public class RecordDao extends SuperDao<Record> {
 	 * @param record
 	 * @return
 	 */
-	public Collection<String> save(Collection<Record> records) {
-		Map<String, String> result = esDao.save(records.toArray());
-		if (result != null) {
-			return new ArrayList<>(result.keySet());
-		}
-		return null;
+	public LinkedHashMap<String, String> save(Collection<Record> records) {
+		return esDao.save(records.toArray());
 	}
 
 	/**
@@ -77,7 +74,7 @@ public class RecordDao extends SuperDao<Record> {
 
 		// 排序
 		List<QuerySort> querySorts = new ArrayList<>();
-//		querySorts.add(new QuerySort("hitCount", SortOrder.DESC));
+		// querySorts.add(new QuerySort("hitCount", SortOrder.DESC));
 		querySorts.add(new QuerySort("createTime", SortOrder.DESC));
 
 		// 高亮规则

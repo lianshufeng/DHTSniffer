@@ -1,7 +1,8 @@
 package com.fast.dev.search.helper;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +54,15 @@ public class PushDatahelper {
 
 	@Scheduled(cron = "*/10 * * * * ?")
 	public void executeTask() {
-		List<PushDataCache> dataCaches = this.dataCacheDao.getCache(1000);
+		List<PushDataCache> dataCaches = this.dataCacheDao.getCache(500);
 		if (dataCaches != null && dataCaches.size() > 0) {
-			List<PushData> datas = new ArrayList<>();
+			Map<String, PushData> datas = new HashMap<>();
 			for (PushDataCache dataCache : dataCaches) {
+				if (dataCache == null) {
+					continue;
+				}
 				try {
-					datas.add(JsonUtil.toObject(dataCache.getContent(), PushData.class));
+					datas.put(dataCache.getId(), JsonUtil.toObject(dataCache.getContent(), PushData.class));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -73,14 +77,15 @@ public class PushDatahelper {
 	 * @param keys
 	 * @return
 	 */
-	private boolean task(List<PushData> datas) {
+	private boolean task(Map<String, PushData> datas) {
 		LOG.info("Push Data : " + datas.size());
 		try {
 			this.recordService.save(datas);
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return true;
+		return false;
 	}
 
 }

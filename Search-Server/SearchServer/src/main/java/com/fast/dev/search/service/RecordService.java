@@ -3,6 +3,7 @@ package com.fast.dev.search.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.fast.dev.es.query.QueryRecord;
 import com.fast.dev.es.query.QueryResult;
+import com.fast.dev.search.dao.PushDataCacheDao;
 import com.fast.dev.search.dao.RecordDao;
 import com.fast.dev.search.dao.RecordInfoDao;
 import com.fast.dev.search.domain.Record;
@@ -40,6 +42,9 @@ public class RecordService {
 
 	@Autowired
 	private RecordInfoDao recordInfoDao;
+
+	@Autowired
+	private PushDataCacheDao dataCacheDao;
 
 	@Autowired
 	private YouDaoWordHelper wordHelper;
@@ -74,22 +79,39 @@ public class RecordService {
 	 * 
 	 * @param datas
 	 */
-	public Collection<String> save(Collection<PushData> datas) {
+	public Collection<String> save(Map<String, PushData> datas) {
 		LOG.info(String.format("save : [%s]", datas.size()));
-		List<Record> records = new ArrayList<>();
-		for (final PushData data : datas) {
+		Map<String, Record> records = new LinkedHashMap<>();
+		for (Entry<String, PushData> entry : datas.entrySet()) {
 			// 去除重复
-			if (!this.recordInfoDao.urlExits(data.getUrl())) {
-				// 需要先保存到本地mongodb里
-				Record record = toRecord(data);
-				if (record != null) {
-					records.add(record);
-				}
+			if (this.recordInfoDao.urlExits(entry.getValue().getUrl())) {
+				// 跳过重复，并设置该任务为完成状态
+				LOG.info(String.format("Skip Exits : [%s]", entry.getValue().getUrl()));
+				this.dataCacheDao.finishCache(entry.getKey());
 			} else {
-				LOG.info(String.format("Skip Exits : [%s]", data.getUrl()));
+				// 需要先保存到本地mongodb里
+				Record record = toRecord(entry.getValue());
+				if (record != null) {
+					records.put(entry.getKey(), record);
+				}
 			}
 		}
-		return this.recordDao.save(records);
+		List<Record> saveDatas = new ArrayList<>(records.values());
+		try {
+			LinkedHashMap<String, String> result = this.recordDao.save(saveDatas);
+			if (result != null && result.size() > 0) {
+				this.dataCacheDao.finishCache(records.keySet().toArray(new String[0]));
+			}
+			return result == null ? null : result.keySet();
+		} catch (Exception e) {
+			// 异常则删除记录信息
+			List<String> ids = new ArrayList<>();
+			for (Record record : records.values()) {
+				ids.add(record.getRef());
+			}
+			this.recordInfoDao.remove(ids.toArray(new String[0]));
+			throw e;
+		}
 	}
 
 	/**
