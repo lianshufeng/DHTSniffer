@@ -54,6 +54,10 @@
                 <span class="Page_Item_title" >发布时间：</span>
                 <span>{{ item.time }}</span>
               </p>
+              <p class="Information_detail_information_Item" >
+                <span class="Page_Item_title" >相关内容：</span>
+                <span v-html="item.like"></span>
+              </p>
               <p style="text-align:center;cursor: pointer;margin: 0 auto;">
                 <span v-on:click="openPage(item.id)" >浏览详情</span>
               </p>
