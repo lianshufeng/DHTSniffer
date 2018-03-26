@@ -13,6 +13,8 @@ public class SearchRecord {
 	private String time;
 	// 标题
 	private String title;
+	// 相关性
+	private String like;
 
 	/**
 	 * @return the title
@@ -102,6 +104,21 @@ public class SearchRecord {
 	 */
 	public void setTime(String time) {
 		this.time = time;
+	}
+
+	/**
+	 * @return the like
+	 */
+	public String getLike() {
+		return like;
+	}
+
+	/**
+	 * @param like
+	 *            the like to set
+	 */
+	public void setLike(String like) {
+		this.like = like;
 	}
 
 	// id: 1,

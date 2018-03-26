@@ -80,6 +80,7 @@ public class RecordDao extends SuperDao<Record> {
 		// 高亮规则
 		List<QueryHighlight> queryHighlights = new ArrayList<>();
 		queryHighlights.add(new QueryHighlight(TitleName, preTag, postTag));
+		queryHighlights.add(new QueryHighlight(IndexName, preTag, postTag));
 
 		// 如果没有传递搜索参数则全局搜索，按照收录时间降序
 		QueryBuilder queryBuilder = StringUtils.isEmpty(wd) ? QueryBuilders.matchAllQuery() : getQueryBuilder(wds);

@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fast.dev.core.util.text.TextUtil;
 import com.fast.dev.es.query.QueryRecord;
 import com.fast.dev.es.query.QueryResult;
 import com.fast.dev.search.dao.PushDataCacheDao;
@@ -318,6 +319,7 @@ public class RecordService {
 			searchRecord.setFileCount(Integer.parseInt(String.valueOf(source.get("fileCount"))));
 		}
 
+		// 文件类型
 		if (source.get("fileType") != null) {
 			Set<String> fileTypeName = new HashSet<>();
 			for (String type : (Collection<String>) source.get("fileType")) {
@@ -328,6 +330,15 @@ public class RecordService {
 			}
 			searchRecord.setType(fileTypeName.toArray(new String[0]));
 		}
+
+		// 相关相关性
+		if (highLight.get("index") != null) {
+			String index = String.valueOf(highLight.get("index").toArray()[0]);
+			int at = index.indexOf("<");
+			int end = index.lastIndexOf(">")+1;
+			searchRecord.setLike(index.substring(at, end));
+		}
+
 		return searchRecord;
 	}
 
