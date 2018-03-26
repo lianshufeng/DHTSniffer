@@ -33,7 +33,7 @@
 
           <div class="Search_result_information">
             <div class="Information_detail_information" >
-              <p class="Information_detail_information_Item" >
+              <p class="Information_detail_information_Item" v-show="item.type != null ">
                 <span class="Page_Item_title" >文档类型：</span>
                 <span>{{ item.type }}</span>
                 <template v-for="type in item.types">
@@ -46,7 +46,7 @@
                 <span class="Page_Item_title">文件数量：</span>
                 <span>{{item.fileCount}}</span>
               </p>
-              <p class="Information_detail_information_Item" >
+              <p class="Information_detail_information_Item" v-show="item.size != null">
                 <span class="Page_Item_title">文件大小：</span>
                 <span>{{item.size}}</span>
               </p>
@@ -54,7 +54,7 @@
                 <span class="Page_Item_title" >发布时间：</span>
                 <span>{{ item.time }}</span>
               </p>
-              <p class="Information_detail_information_Item" >
+              <p class="Information_detail_information_Item" v-show="item.like != null">
                 <span class="Page_Item_title" >相关内容：</span>
                 <span v-html="item.like"></span>
               </p>
@@ -67,6 +67,11 @@
 
         <!-- 底部翻页-->
         <div id="Page_page_container">
+
+          <div style="text-align: right;font: 10px arial;color: rgb(153, 153, 153)">
+            <span>匹配： {{ (contentTotal / 10000).toFixed(2) == 0 ? (contentTotal / 10000).toFixed(4):(contentTotal / 10000).toFixed(2) }} 万条</span>
+          </div>
+
           <div id="Page_page_list">
             <!-- 上一页渲染 -->
             <template>
@@ -281,9 +286,7 @@ export default {
       this.requestSearch(this.wd, newPage)
     },
     requestSearch: function (keyWord, pageNum) {
-      console.log('keyWord : ' + keyWord + ' page : ' + pageNum)
-      // this.searchResult[0].title = '搜索：' + keyWord + ', 第 ' + pageNum + ' 页'
-      // this.searchResult[1].title = '搜索：' + keyWord + ', 第 ' + pageNum + ' 页'
+      // console.log('keyWord : ' + keyWord + ' page : ' + pageNum)
       let size = 10
       let me = this
       let url = ElementUtil.methods.getValueByid('HostUrl') + 'store/search.json'
@@ -300,6 +303,8 @@ export default {
         me.page.current = pageNum
         // 更新数据到视图
         me.searchResult = content.datas
+        // 总记录数
+        me.contentTotal = content.total
         // 回到顶部
         document.body.scrollTop = document.documentElement.scrollTop = 0
       }).catch(function (e) {
@@ -310,8 +315,9 @@ export default {
   data () {
     return {
       wd: '',
+      contentTotal: 0,
       page: {
-        total: 5,
+        total: 1,
         current: 1
       },
       searchResult: [
