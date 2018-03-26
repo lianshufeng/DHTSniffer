@@ -16,7 +16,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fast.dev.core.util.text.TextUtil;
 import com.fast.dev.es.query.QueryRecord;
 import com.fast.dev.es.query.QueryResult;
 import com.fast.dev.search.dao.PushDataCacheDao;
@@ -72,7 +71,7 @@ public class RecordService {
 		int from = (page - 1) * size;
 		QueryResult queryResult = this.recordDao.search(wd, from, size, preTag, postTag);
 		// 数据转换到视图层
-		return toSearchResult(queryResult);
+		return toSearchResult(queryResult, wd, preTag, postTag);
 	}
 
 	/**
@@ -267,12 +266,13 @@ public class RecordService {
 	 * @param queryResult
 	 * @return
 	 */
-	private static SearchResult toSearchResult(final QueryResult queryResult) {
+	private static SearchResult toSearchResult(final QueryResult queryResult, final String wd, String preTag,
+			String postTag) {
 		SearchResult searchResult = new SearchResult();
 		searchResult.setTotal(queryResult.getTotal());
 		List<SearchRecord> records = new ArrayList<>();
 		for (QueryRecord queryRecord : queryResult.getRecords()) {
-			records.add(toSearchRecord(queryRecord));
+			records.add(toSearchRecord(queryRecord, wd, preTag, postTag));
 		}
 		searchResult.setDatas(records);
 		return searchResult;
@@ -285,7 +285,8 @@ public class RecordService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private static SearchRecord toSearchRecord(final QueryRecord queryRecord) {
+	private static SearchRecord toSearchRecord(final QueryRecord queryRecord, String wd, String preTag,
+			String postTag) {
 		Map<String, Object> source = queryRecord.getSource();
 		Map<String, Collection<String>> highLight = queryRecord.getHighLight();
 
@@ -294,11 +295,11 @@ public class RecordService {
 		if (source.get("ref") != null) {
 			searchRecord.setId(String.valueOf(source.get("ref")));
 		}
-		// 标题
-		if (highLight.get("title") != null) {
-			searchRecord.setTitle(String.valueOf(highLight.get("title").toArray()[0]));
-		} else {
-			searchRecord.setTitle(String.valueOf(source.get("title")));
+		// 标题 ，手动高亮
+		if (source.get("title") != null) {
+			String title = String.valueOf(source.get("title"));
+			title = title.replaceAll(wd, preTag + wd + postTag);
+			searchRecord.setTitle(title);
 		}
 
 		// 文件总长度
@@ -334,9 +335,7 @@ public class RecordService {
 		// 相关相关性
 		if (highLight.get("index") != null) {
 			String index = String.valueOf(highLight.get("index").toArray()[0]);
-			int at = index.indexOf("<");
-			int end = index.lastIndexOf(">")+1;
-			searchRecord.setLike(index.substring(at, end));
+			searchRecord.setLike(index);
 		}
 
 		return searchRecord;

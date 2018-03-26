@@ -85,7 +85,7 @@ public class RecordDao extends SuperDao<Record> {
 		// 如果没有传递搜索参数则全局搜索，按照收录时间降序
 		QueryBuilder queryBuilder = StringUtils.isEmpty(wd) ? QueryBuilders.matchAllQuery() : getQueryBuilder(wds);
 
-		return this.esDao.list(queryBuilder, queryHighlights, querySorts, queryLimit);
+		return this.esDao.list(queryBuilder, 20, queryHighlights, querySorts, queryLimit);
 	}
 
 	/**

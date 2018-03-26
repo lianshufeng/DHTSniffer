@@ -15,6 +15,9 @@ public class FormatUtil {
 	 * @return
 	 */
 	public static String formatSize(long size) {
+		if (size <= 0) {
+			return null;
+		}
 		double val = (double) size / 1024 / 1024 / 1024;
 		return new BigDecimal(val).setScale(3, BigDecimal.ROUND_HALF_UP) + " GB";
 	}
