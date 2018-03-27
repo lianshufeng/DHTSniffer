@@ -18,6 +18,7 @@ import com.fast.dev.es.query.QueryLimit;
 import com.fast.dev.es.query.QueryResult;
 import com.fast.dev.es.query.QuerySort;
 import com.fast.dev.search.domain.Record;
+import com.fast.dev.search.util.StringSplit;
 
 @Repository
 public class RecordDao extends SuperDao<Record> {
@@ -66,7 +67,7 @@ public class RecordDao extends SuperDao<Record> {
 	public QueryResult search(final String wd, int from, int size, String preTag, String postTag) {
 
 		// 自动分割，多次匹配
-//		final String[] wds = StringSplit.split(wd);
+		// final String[] wds = StringSplit.split(wd);
 
 		// 分页
 		QueryLimit queryLimit = new QueryLimit(from, size, 5000l);
@@ -100,6 +101,9 @@ public class RecordDao extends SuperDao<Record> {
 		// 查询 title and
 		BoolQueryBuilder titleQueryBuilder = QueryBuilders.boolQuery();
 		titleQueryBuilder.must(QueryBuilders.matchPhraseQuery(TitleName, wd));
+		// for (String kw : StringSplit.split(wd)) {
+		// titleQueryBuilder.must(QueryBuilders.matchPhraseQuery(TitleName, kw));
+		// }
 
 		// 查询 index or
 		BoolQueryBuilder indexQueryBuilder = QueryBuilders.boolQuery();

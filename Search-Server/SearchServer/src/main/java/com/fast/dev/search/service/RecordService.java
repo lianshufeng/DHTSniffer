@@ -301,7 +301,6 @@ public class RecordService {
 			try {
 				title = title.replaceAll(wd, preTag + wd + postTag);
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 			searchRecord.setTitle(title);
 		}
