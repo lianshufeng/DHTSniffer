@@ -58,8 +58,8 @@
                 <span class="Page_Item_title" >相关内容：</span>
                 <span v-html="item.like"></span>
               </p>
-              <p style="text-align:center;cursor: pointer;margin: 0 auto;">
-                <span v-on:click="openPage(item.id)" >浏览详情</span>
+              <p style="text-align:center;cursor: pointer;margin: 0 auto;" v-on:click="openPage(item.id)">
+                <span  >浏览详情</span>
               </p>
               </div>
           </div>
@@ -114,49 +114,18 @@
             <span class="RightTopList_float_right" >指数</span>
           </div>
           <ul class="RightTopList_rank_list" >
-            <li >
-              <span class="RightTopList_float_left" >
-                <em class="RightTopList_rank_num_1 RightTopList_rank_num" >1</em>
-                <a href="#">美好生活</a>
-              </span>
-              <span class="RightTopList_float_right" >52349
-              </span>
-            </li>
-            <li >
-              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num_2 RightTopList_rank_num" >2</em>
-                <a href="#" >老男孩</a>
-              </span>
-              <span class="RightTopList_float_right" >
-                47699
-              </span>
-            </li>
-
-            <li >
-              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num_3 RightTopList_rank_num" >3</em>
-                <a href="#" >烈火如歌</a>
-              </span>
-              <span class="RightTopList_float_right" >
-                47699
-              </span>
-            </li>
-
-            <li >
-              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num" >4</em>
-                <a href="#" >利刃出击</a>
-              </span>
-            <span class="RightTopList_float_right" >
-                47699
-              </span>
-          </li>
-
-          <li >
-              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num" >5</em>
-                <a href="#" >迷雾</a>
-              </span>
-              <span class="RightTopList_float_right" >
-                47699
-              </span>
-          </li>
+            <template v-for="(item,i) in (hostResult) ">
+              <li :key="i" >
+                <span class="RightTopList_float_left line-limit-length">
+                  <em class="RightTopList_rank_num"
+                      v-bind:class="{ RightTopList_rank_num_3: (i+1)==3, RightTopList_rank_num_2: (i+1)==2 , RightTopList_rank_num_1: (i+1)==1 }">{{i+1}}</em>
+                  <a href="#" v-on:click="wd=item.name;search()">{{ item.name }}</a>
+                </span>
+                <span class="RightTopList_float_right">
+                  {{item.index}}
+                </span>
+              </li>
+            </template>
           </ul>
         </div>
 
@@ -170,60 +139,18 @@
             <span class="RightTopList_float_right" >时间</span>
           </div>
           <ul class="RightTopList_rank_list" >
-            <li >
-              <span class="RightTopList_float_left" >
-                <em class="RightTopList_rank_num_1 RightTopList_rank_num" >1</em>
-                <a href="#">星球大战8：最后的绝地武士</a>
-              </span>
-              <span class="RightTopList_float_right" >
-                2018-03-15
-              </span>
-            </li>
-            <li >
-              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num_2 RightTopList_rank_num" >2</em>
-                <a href="#" >王牌特工2：黄金圈</a>
-              </span>
-              <span class="RightTopList_float_right" >
-                2018-03-15
-              </span>
-            </li>
-
-            <li >
-              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num_3 RightTopList_rank_num" >3</em>
-                <a href="#" >湮灭/灭绝</a>
-              </span>
-              <span class="RightTopList_float_right" >
-                2018-03-14
-              </span>
-            </li>
-
-            <li >
-              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num" >4</em>
-                <a href="#" >前任3：再见前任</a>
-              </span>
-              <span class="RightTopList_float_right" >
-                2018-03-13
-              </span>
-            </li>
-
-            <li >
-              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num" >5</em>
-                <a href="#" >帕丁顿熊2</a>
-              </span>
-              <span class="RightTopList_float_right" >
-                2018-03-13
-              </span>
-            </li>
-
-            <li >
-              <span class="RightTopList_float_left" ><em class="RightTopList_rank_num" >6</em>
-                <a href="#" >正义联盟</a>
-              </span>
-              <span class="RightTopList_float_right" >
-                2018-03-12
-              </span>
-            </li>
-
+            <template v-for="(item,i) in (newsResult) ">
+              <li :key="i" >
+                <span class="RightTopList_float_left line-limit-length">
+                  <em class="RightTopList_rank_num"
+                      v-bind:class="{ RightTopList_rank_num_3: (i+1)==3, RightTopList_rank_num_2: (i+1)==2 , RightTopList_rank_num_1: (i+1)==1 }">{{i+1}}</em>
+                  <a href="#" v-on:click="wd=item.name;search()">{{ item.name }}</a>
+                </span>
+                <span class="RightTopList_float_right">
+                  {{item.time}}
+                </span>
+              </li>
+            </template>
           </ul>
         </div>
 
@@ -285,6 +212,15 @@ export default {
     skipPage: function (newPage) {
       this.requestSearch(this.wd, newPage)
     },
+    updateNewsResult: function () {
+      let me = this
+      let url = ElementUtil.methods.getValueByid('HostUrl') + 'store/news.json'
+      ajax.post(url).then(function (data) {
+        me.newsResult = data.data.invokerResult.content
+      }).catch(function (e) {
+        console.error(e)
+      })
+    },
     requestSearch: function (keyWord, pageNum) {
       // console.log('keyWord : ' + keyWord + ' page : ' + pageNum)
       let size = 10
@@ -320,6 +256,30 @@ export default {
         total: 1,
         current: 1
       },
+      newsResult: [
+      ],
+      hostResult: [
+        {
+          name: '美好生活',
+          index: 52349
+        },
+        {
+          name: '老男孩',
+          index: 52349
+        },
+        {
+          name: '烈火如歌',
+          index: 47699
+        },
+        {
+          name: '利刃出击',
+          index: 47699
+        },
+        {
+          name: '迷雾',
+          index: 47699
+        }
+      ],
       searchResult: [
         // {
         //   id: 1,
@@ -347,6 +307,9 @@ export default {
       })()
     }
     this.showRightContent(me.screenWidth)
+
+    // 更新最新收录表
+    this.updateNewsResult()
   },
   watch: {
     screenWidth: function (val) {
@@ -539,7 +502,11 @@ export default {
     font-weight: 700;
     margin-bottom: 12px;
   }
-
+  .line-limit-length {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .RightTopList_float_left {
     float: left;
     width: 65%;
