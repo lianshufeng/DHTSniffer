@@ -298,7 +298,11 @@ public class RecordService {
 		// 标题 ，手动高亮
 		if (source.get("title") != null) {
 			String title = String.valueOf(source.get("title"));
-			title = title.replaceAll(wd, preTag + wd + postTag);
+			try {
+				title = title.replaceAll(wd, preTag + wd + postTag);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			searchRecord.setTitle(title);
 		}
 
