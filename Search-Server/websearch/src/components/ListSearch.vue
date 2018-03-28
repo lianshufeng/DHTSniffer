@@ -163,6 +163,9 @@
         <p>
           ©2018 金牌找你妹
         </p>
+        <p>
+          仅为海外华人提供服务，受当地律法保护！
+        </p>
       </div>
     </div>
   </div>
@@ -215,7 +218,7 @@ export default {
     updateHotWordsResult: function () {
       let me = this
       let url = ElementUtil.methods.getValueByid('HostUrl') + 'store/hotWords.json'
-      ajax.post(url, 'count=20').then(function (data) {
+      ajax.post(url, 'count=15').then(function (data) {
         me.hotWordsResult = data.data.invokerResult.content
       }).catch(function (e) {
         console.error(e)
@@ -224,7 +227,7 @@ export default {
     updateNewsResult: function () {
       let me = this
       let url = ElementUtil.methods.getValueByid('HostUrl') + 'store/news.json'
-      ajax.post(url, 'count=20').then(function (data) {
+      ajax.post(url, 'count=15').then(function (data) {
         me.newsResult = data.data.invokerResult.content
       }).catch(function (e) {
         console.error(e)
@@ -265,30 +268,8 @@ export default {
         total: 1,
         current: 1
       },
-      newsResult: [
-      ],
-      hotWordsResult: [
-        {
-          name: '美好生活',
-          hit: 52349
-        },
-        {
-          name: '老男孩',
-          hit: 52349
-        },
-        {
-          name: '烈火如歌',
-          hit: 47699
-        },
-        {
-          name: '利刃出击',
-          hit: 47699
-        },
-        {
-          name: '迷雾',
-          hit: 47699
-        }
-      ],
+      newsResult: [],
+      hotWordsResult: [],
       searchResult: [
         // {
         //   id: 1,
@@ -540,8 +521,6 @@ export default {
     font-size: 13px;
     border-bottom: 1px solid #f0f0f0;
   }
-
-
 
   .RightTopList_rank_num {
     display: inline-block;
