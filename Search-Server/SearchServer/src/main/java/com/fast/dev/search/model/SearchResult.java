@@ -1,5 +1,6 @@
 package com.fast.dev.search.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -10,8 +11,9 @@ import java.util.Collection;
  * @时间 2018年3月16日
  *
  */
-public class SearchResult {
+public class SearchResult implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	// 总数量量
 	private long total;
 	// 当前数据

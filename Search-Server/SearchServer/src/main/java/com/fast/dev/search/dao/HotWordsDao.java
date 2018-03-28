@@ -13,6 +13,7 @@ import java.util.Vector;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -34,8 +35,8 @@ import com.mongodb.DBCollection;
 @Component
 public class HotWordsDao extends MongoDaoImpl<HotWord> {
 
-	private static final String PreCollectionName = "hotWorld_";
-	private static final SimpleDateFormat DateFormat = new SimpleDateFormat("yyyyMMdd");
+	public static final String PreCollectionName = "hotWorld_";
+	public static final SimpleDateFormat DateFormat = new SimpleDateFormat("yyyyMMdd");
 
 	// 创建的缓存
 	private Vector<String> collectionBuildCache = new Vector<>();
@@ -86,7 +87,7 @@ public class HotWordsDao extends MongoDaoImpl<HotWord> {
 		}
 		// 排序
 		Collections.sort(hotWords);
-		return hotWords.subList(0, maxSize <= hotWords.size() ? maxSize : hotWords.size());
+		return new ArrayList<>(hotWords.subList(0, maxSize <= hotWords.size() ? maxSize : hotWords.size()));
 	}
 
 	/**
@@ -171,6 +172,15 @@ public class HotWordsDao extends MongoDaoImpl<HotWord> {
 	 */
 	private static String formatCollectionName(long time) {
 		return PreCollectionName + DateFormat.format(time);
+	}
+
+	/**
+	 * 取出Dao对象
+	 * 
+	 * @return
+	 */
+	public MongoTemplate getMongoTemplate() {
+		return this.mongoTemplate;
 	}
 
 }

@@ -1,6 +1,9 @@
 package com.fast.dev.search.model;
 
-public class SearchRecord {
+import java.io.Serializable;
+
+public class SearchRecord implements Serializable{
+	private static final long serialVersionUID = 1L;
 	// 记录ID
 	private String id;
 	// 文件类型

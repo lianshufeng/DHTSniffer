@@ -20,6 +20,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fast.dev.component.cachemethod.annotations.CacheMethod;
+import com.fast.dev.component.cachemethod.annotations.CacheParameter;
 import com.fast.dev.es.query.QueryRecord;
 import com.fast.dev.es.query.QueryResult;
 import com.fast.dev.search.dao.HotWordsDao;
@@ -82,7 +84,9 @@ public class RecordService {
 	 * @param page
 	 * @param size
 	 */
-	public SearchResult search(String wd, int page, int size, String preTag, String postTag) {
+	@CacheMethod(collectionName = "Record_search", overflowToDisk = true, maxMemoryCount = 100, timeToIdleSeconds = 180, timeToLiveSeconds = 180)
+	public SearchResult search(@CacheParameter String wd, @CacheParameter Integer page, @CacheParameter Integer size,
+			@CacheParameter String preTag, @CacheParameter String postTag) {
 		// 开始记录数
 		int from = (page - 1) * size;
 		QueryResult queryResult = this.recordDao.search(wd, from, size, preTag, postTag);
@@ -97,7 +101,8 @@ public class RecordService {
 	 * @param day
 	 * @return
 	 */
-	public List<HotWord> getHotWords(int maxSize, int day) {
+	@CacheMethod(collectionName = "Record_getHotWords", overflowToDisk = true, maxMemoryCount = 100, timeToIdleSeconds = 180, timeToLiveSeconds = 180)
+	public List<HotWord> getHotWords(Integer maxSize, Integer day) {
 		return this.hotWordsDao.list(maxSize, day);
 	}
 

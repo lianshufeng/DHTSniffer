@@ -1,5 +1,7 @@
 package com.fast.dev.search.domain;
 
+import java.io.Serializable;
+
 import org.springframework.data.mongodb.core.index.Indexed;
 
 /**
@@ -10,7 +12,9 @@ import org.springframework.data.mongodb.core.index.Indexed;
  * @时间 2018年3月28日
  *
  */
-public class HotWord implements Comparable<HotWord> {
+public class HotWord implements Comparable<HotWord>,Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Indexed(unique = true)
 	private String name;
