@@ -69,7 +69,7 @@
         <div id="Page_page_container">
 
           <div style="text-align: right;font: 10px arial;color: rgb(153, 153, 153)">
-            <span>匹配： {{ (contentTotal / 10000).toFixed(2) == 0 ? (contentTotal / 10000).toFixed(4):(contentTotal / 10000).toFixed(2) }} 万条</span>
+            <span>匹配： {{ (contentTotal / 10000).toFixed(2) == 0 ? contentTotal + ' 条':(contentTotal / 10000).toFixed(2) + ' 万条' }}</span>
           </div>
 
           <div id="Page_page_list">
@@ -114,7 +114,7 @@
             <span class="RightTopList_float_right" >指数</span>
           </div>
           <ul class="RightTopList_rank_list" >
-            <template v-for="(item,i) in (hostResult) ">
+            <template v-for="(item,i) in (hotWordsResult) ">
               <li :key="i" >
                 <span class="RightTopList_float_left line-limit-length">
                   <em class="RightTopList_rank_num"
@@ -122,7 +122,7 @@
                   <a href="#" v-on:click="wd=item.name;search()">{{ item.name }}</a>
                 </span>
                 <span class="RightTopList_float_right">
-                  {{item.index}}
+                  {{item.hit}}
                 </span>
               </li>
             </template>
@@ -212,10 +212,19 @@ export default {
     skipPage: function (newPage) {
       this.requestSearch(this.wd, newPage)
     },
+    updateHotWordsResult: function () {
+      let me = this
+      let url = ElementUtil.methods.getValueByid('HostUrl') + 'store/hotWords.json'
+      ajax.post(url, 'count=20').then(function (data) {
+        me.hotWordsResult = data.data.invokerResult.content
+      }).catch(function (e) {
+        console.error(e)
+      })
+    },
     updateNewsResult: function () {
       let me = this
       let url = ElementUtil.methods.getValueByid('HostUrl') + 'store/news.json'
-      ajax.post(url).then(function (data) {
+      ajax.post(url, 'count=20').then(function (data) {
         me.newsResult = data.data.invokerResult.content
       }).catch(function (e) {
         console.error(e)
@@ -258,26 +267,26 @@ export default {
       },
       newsResult: [
       ],
-      hostResult: [
+      hotWordsResult: [
         {
           name: '美好生活',
-          index: 52349
+          hit: 52349
         },
         {
           name: '老男孩',
-          index: 52349
+          hit: 52349
         },
         {
           name: '烈火如歌',
-          index: 47699
+          hit: 47699
         },
         {
           name: '利刃出击',
-          index: 47699
+          hit: 47699
         },
         {
           name: '迷雾',
-          index: 47699
+          hit: 47699
         }
       ],
       searchResult: [
@@ -310,6 +319,8 @@ export default {
 
     // 更新最新收录表
     this.updateNewsResult()
+    // 更新热词表
+    this.updateHotWordsResult()
   },
   watch: {
     screenWidth: function (val) {
