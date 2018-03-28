@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
+import javax.annotation.PreDestroy;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,9 +22,11 @@ import org.springframework.stereotype.Service;
 
 import com.fast.dev.es.query.QueryRecord;
 import com.fast.dev.es.query.QueryResult;
+import com.fast.dev.search.dao.HotWordsDao;
 import com.fast.dev.search.dao.PushDataCacheDao;
 import com.fast.dev.search.dao.RecordDao;
 import com.fast.dev.search.dao.RecordInfoDao;
+import com.fast.dev.search.domain.HotWord;
 import com.fast.dev.search.domain.Record;
 import com.fast.dev.search.domain.RecordInfo;
 import com.fast.dev.search.helper.YouDaoWordHelper;
@@ -47,7 +53,17 @@ public class RecordService {
 	private PushDataCacheDao dataCacheDao;
 
 	@Autowired
+	private HotWordsDao hotWordsDao;
+
+	@Autowired
 	private YouDaoWordHelper wordHelper;
+	// 线程池
+	private ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(20);
+
+	@PreDestroy
+	private void shutdown() {
+		this.threadPool.shutdownNow();
+	}
 
 	/**
 	 * 查询
@@ -72,6 +88,17 @@ public class RecordService {
 		QueryResult queryResult = this.recordDao.search(wd, from, size, preTag, postTag);
 		// 数据转换到视图层
 		return toSearchResult(queryResult, wd, preTag, postTag);
+	}
+
+	/**
+	 * 取热词
+	 * 
+	 * @param maxSize
+	 * @param day
+	 * @return
+	 */
+	public List<HotWord> getHotWords(int maxSize, int day) {
+		return this.hotWordsDao.list(maxSize, day);
 	}
 
 	/**
@@ -112,6 +139,20 @@ public class RecordService {
 			this.recordInfoDao.remove(ids.toArray(new String[0]));
 			throw e;
 		}
+	}
+
+	/**
+	 * 记录热词
+	 * 
+	 * @param wd
+	 */
+	public void hitHotWord(final String words) {
+		threadPool.execute(new Runnable() {
+			@Override
+			public void run() {
+				hotWordsDao.hit(1, StringSplit.split(words));
+			}
+		});
 	}
 
 	/**

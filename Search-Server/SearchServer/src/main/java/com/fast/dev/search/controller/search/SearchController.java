@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.fast.dev.core.model.InvokerResult;
+import com.fast.dev.search.domain.HotWord;
 import com.fast.dev.search.model.SearchRecord;
 import com.fast.dev.search.model.SearchResult;
 import com.fast.dev.search.service.RecordService;
@@ -26,6 +27,8 @@ public class SearchController {
 
 	@RequestMapping("search.json")
 	public InvokerResult<SearchResult> search(String wd, Integer page, Integer size) {
+		// 记录热词
+		this.recordService.hitHotWord(wd);
 		// 进行查询
 		SearchResult content = this.recordService.search(wd, page == null ? 1 : page,
 				size == null || size > 30 ? 10 : size, preTag, postTag);
@@ -33,9 +36,9 @@ public class SearchController {
 	}
 
 	@RequestMapping("news.json")
-	public InvokerResult<Object> news(Integer size) {
+	public InvokerResult<Object> news(Integer count) {
 		// 进行查询
-		SearchResult content = this.recordService.search(null, 1, size == null || size > 30 ? 10 : size, "", "");
+		SearchResult content = this.recordService.search(null, 1, count == null || count > 30 ? 10 : count, "", "");
 		List<Map<String, Object>> result = new ArrayList<>();
 		for (final SearchRecord searchRecord : content.getDatas()) {
 			String time = searchRecord.getTime();
@@ -47,6 +50,12 @@ public class SearchController {
 			}
 			result.add(m);
 		}
+		return new InvokerResult<Object>(result);
+	}
+
+	@RequestMapping("hotWords.json")
+	public InvokerResult<Object> hotWords(Integer count) {
+		List<HotWord> result = this.recordService.getHotWords(count, 7);
 		return new InvokerResult<Object>(result);
 	}
 
