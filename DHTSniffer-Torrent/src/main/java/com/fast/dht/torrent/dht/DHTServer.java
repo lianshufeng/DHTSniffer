@@ -26,26 +26,28 @@ public class DHTServer {
 	SessionManager sessionManager;
 	SessionParams params;
 
+	long currentTotalNode = 0;
+
 	@Autowired
 	private void init() {
 		sessionManager = new SessionManager();
 		SettingsPack sp = new SettingsPack();
 
 		sp.setString(settings_pack.string_types.dht_bootstrap_nodes.swigValue(), "dht.aelitis.com:6881");
-		sp.setString(settings_pack.string_types.dht_bootstrap_nodes.swigValue(), "router.bitcomet.com:6881");
 		sp.setString(settings_pack.string_types.dht_bootstrap_nodes.swigValue(), "router.utorrent.com:6881");
-		sp.setString(settings_pack.string_types.dht_bootstrap_nodes.swigValue(), "router.silotis.us:6881");
 		sp.setString(settings_pack.string_types.dht_bootstrap_nodes.swigValue(), "router.bittorrent.com:6881");
 		sp.setString(settings_pack.string_types.dht_bootstrap_nodes.swigValue(), "dht.transmissionbt.com:6881");
 		params = new SessionParams(sp);
 		sessionManager.start(params);
+
+		waitMoreNodes();
+
 	}
 
 	/**
 	 * 请求种子文件
 	 */
 	public TorrentReader query(final String hash) {
-		waitMoreNodes();
 		String magnet = createMagnet(hash);
 		return queryTask(magnet);
 	}
@@ -83,8 +85,14 @@ public class DHTServer {
 				@Override
 				public void run() {
 					long nodes = sessionManager.stats().dhtNodes();
+					if (currentTotalNode != nodes) {
+						currentTotalNode = nodes;
+						LOG.info(String.format("dhtNodes : %s", currentTotalNode));
+					}
 					if (nodes >= torrentConfig.getMinNodesCount()) {
-						signal.countDown();
+						if (signal.getCount() != 0) {
+							signal.countDown();
+						}
 					}
 				}
 			}, 0, 1000);
