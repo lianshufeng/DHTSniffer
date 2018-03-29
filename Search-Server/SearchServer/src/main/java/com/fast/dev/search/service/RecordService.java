@@ -40,6 +40,7 @@ import com.fast.dev.search.util.FileTypeUtil;
 import com.fast.dev.search.util.FormatUtil;
 import com.fast.dev.search.util.PinyinTool;
 import com.fast.dev.search.util.StringSplit;
+import com.fast.dev.search.util.UrlValidateUtil;
 
 @Service
 public class RecordService {
@@ -121,8 +122,15 @@ public class RecordService {
 				LOG.info(String.format("Skip Exits : [%s]", entry.getValue().getUrl()));
 				this.dataCacheDao.finishCache(entry.getKey());
 			} else {
+				PushData pushData = entry.getValue();
+				if (!UrlValidateUtil.validate(pushData.getUrl())) {
+					LOG.info(String.format("Url Error : [%s]", pushData.getUrl()));
+					this.dataCacheDao.finishCache(entry.getKey());
+					continue;
+				}
+
 				// 需要先保存到本地mongodb里
-				Record record = toRecord(entry.getValue());
+				Record record = toRecord(pushData);
 				if (record != null) {
 					records.put(entry.getKey(), record);
 				}
