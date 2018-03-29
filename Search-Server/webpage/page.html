@@ -15,7 +15,6 @@
     <!-- page specific plugin styles -->
 
     <!-- text fonts -->
-    <link rel="stylesheet" href="assets/css/fonts.googleapis.com.css"/>
 
     <!-- ace styles -->
     <link rel="stylesheet" href="assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style"/>
@@ -75,7 +74,7 @@
 
                 <div class="page-header">
                     <h1 class="text-center">
-                        <small >
+                        <small>
                             【蚂蚁仔www.mayizai.com】[祖宗十九代][HDTC-MP4-1.50GB][国语中字][1080P]
                         </small>
                     </h1>
@@ -90,21 +89,29 @@
                                 <div class="widget-box widget-color-blue3">
                                     <div class="widget-header">
                                         <h4 class="widget-title lighter smaller">
-                                            <div class=" col-xs-6 com-sm-6">
+                                            <div class="col-xs-6 com-sm-6">
                                                 文件列表
                                             </div>
                                             <div class="col-xs-6 com-sm-6 text-right">
-                                                <span class="smaller-20" style="cursor:pointer">
-                                                    在线播放
+                                                <span class="smaller-20"  >
+                                                    总共：25.6 GB
                                                 </span>
-
                                             </div>
+
                                         </h4>
                                     </div>
 
                                     <div class="widget-body">
                                         <div class="widget-main padding-8">
-                                            <ul id="fileManager"></ul>
+                                            <div id="fileManager">
+                                                <ul style="display: none">
+                                                    <li>/aaaa/444/22.jpg</li>
+                                                    <li>/aaaa/444/11.mp4</li>
+                                                    <li>11.jpg</li>
+                                                    <li>222/11</li>
+                                                    <li>/aaaa/33/22/11.jpg</li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -124,30 +131,31 @@
 
                                         <div class="tabbable tabs-below">
                                             <div class="tab-content">
-                                                <div  class="tab-pane">
-                                                    <p>Raw denim you probably haven't heard of them jean shorts Austin.</p>
+                                                <div class="tab-pane active" id="sourceUrl" >
+                                                    <p>原地址</p>
                                                 </div>
 
-                                                <div  class="tab-pane active">
-                                                    <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.</p>
+                                                <div class="tab-pane" id="xunleiUrl" >
+                                                    <p>xunlei</p>
                                                 </div>
 
-                                                <div  class="tab-pane">
-                                                    <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade.</p>
+                                                <div class="tab-pane" id="xuanfengUrl">
+                                                    <p>xuanfeng</p>
                                                 </div>
                                             </div>
 
-                                            <ul class="nav nav-tabs" >
+                                            <ul class="nav nav-tabs">
                                                 <li class="active">
-                                                    <a data-toggle="tab" href="#home2" aria-expanded="false">原始地址</a>
+                                                    <a data-toggle="tab" href="#sourceUrl" aria-expanded="false">原始地址</a>
                                                 </li>
 
                                                 <li class="">
-                                                    <a data-toggle="tab" href="#profile2" aria-expanded="true">迅雷地址</a>
+                                                    <a data-toggle="tab" href="#xunleiUrl" aria-expanded="true">迅雷地址</a>
                                                 </li>
 
                                                 <li class="">
-                                                    <a data-toggle="tab" href="#dropdown12" aria-expanded="false">旋风地址</a>
+                                                    <a data-toggle="tab" href="#xuanfengUrl"
+                                                       aria-expanded="false">旋风地址</a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -157,7 +165,6 @@
                                 </div>
                             </div>
                         </div>
-
 
 
                         <!-- PAGE CONTENT ENDS -->
@@ -205,14 +212,49 @@
 <!-- ace scripts -->
 <script src="assets/js/ace-elements.min.js"></script>
 <script src="assets/js/ace.min.js"></script>
+<script src="assets/js/fileType.js"></script>
 
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
     jQuery(function ($) {
-        var sampleData = initiateDemoData();//see below
 
-        $('#fileManager').ace_tree({
-            dataSource: sampleData,
+
+        var fileType = new FileTypeICon();
+        /**
+         * 设置文件组
+         * @param name
+         * @param item
+         */
+        var setFileItems = function (item, name) {
+            var info = item[name];
+            //没有子文件
+            if (JSON.stringify(info) == '{}') {
+                var extAt = name.lastIndexOf('.');
+                var extName = extAt == -1 ? '' : name.substring(extAt + 1, name.length);
+                info = {text: '<i class="ace-icon fa ' + fileType.get(extName) + '"></i> ' + name, type: 'item'}
+                item[name] = info;
+            } else {
+                var itemNames = [];
+                for (var i in info) {
+                    setFileItems(info, i);
+                    itemNames.push(i);
+                    // info['additionalParameters']['children'].push(info[i]);
+                    // delete info[i]
+                }
+                info['additionalParameters'] = {'children': []};
+                info['text'] = name;
+                info['type'] = 'folder';
+                for (var i in itemNames) {
+                    info['additionalParameters']['children'].push(info[itemNames[i]]);
+                    delete info[itemNames[i]]
+                }
+            }
+        }
+
+
+        var fileManager = $('#fileManager');
+        fileManager.ace_tree({
+            dataSource: initiateDemoData(fileManager),
             loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
             'open-icon': 'ace-icon fa fa-folder-open',
             'close-icon': 'ace-icon fa fa-folder',
@@ -225,85 +267,44 @@
             'folder-close-icon': 'ace-icon tree-minus'
         });
 
+        //默认展开一层
+        fileManager.tree('discloseVisible');
 
-        function initiateDemoData() {
 
-
-            var tree_data_2 = {
-                'pictures': {text: 'Pictures', type: 'folder', 'icon-class': 'red'},
-                'music': {text: 'Music', type: 'folder', 'icon-class': 'orange'},
-                'video': {text: 'Video', type: 'folder', 'icon-class': 'blue'},
-                'documents': {text: 'Documents', type: 'folder', 'icon-class': 'green'},
-                'backup': {text: 'Backup', type: 'folder'},
-                'readme': {text: '<i class="ace-icon fa fa-file-text grey"></i> ReadMe.txt', type: 'item'},
-                'manual': {text: '<i class="ace-icon fa fa-book blue"></i> Manual.html', type: 'item'}
-            }
-            tree_data_2['music']['additionalParameters'] = {
-                'children': [
-                    {text: '<i class="ace-icon fa fa-music blue"></i> song1.ogg', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-music blue"></i> song2.ogg', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-music blue"></i> song3.ogg', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-music blue"></i> song4.ogg', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-music blue"></i> song5.ogg', type: 'item'}
-                ]
-            }
-            tree_data_2['video']['additionalParameters'] = {
-                'children': [
-                    {text: '<i class="ace-icon fa fa-film blue"></i> movie1.avi', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-film blue"></i> movie2.avi', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-film blue"></i> movie3.avi', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-film blue"></i> movie4.avi', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-film blue"></i> movie5.avi', type: 'item'}
-                ]
-            }
-            tree_data_2['pictures']['additionalParameters'] = {
-                'children': {
-                    'wallpapers': {text: 'Wallpapers', type: 'folder', 'icon-class': 'pink'},
-                    'camera': {text: 'Camera', type: 'folder', 'icon-class': 'pink'}
+        function initiateDemoData(element) {
+            // list转换字典对象
+            var files = {};
+            var lis = element.find('ul').children();
+            for (var i = 0; i < lis.size(); i++) {
+                //获取每一个文件名
+                var filePath = $(lis.get(i)).html();
+                //root级
+                var currentFiles = files;
+                //分割
+                var filePath = filePath.split("/");
+                for (var index in filePath) {
+                    var path = filePath[index];
+                    if (path == '') {
+                        continue;
+                    }
+                    var item = currentFiles[path];
+                    if (item == null) {
+                        item = {}
+                        currentFiles[path] = item;
+                    }
+                    currentFiles = item;
                 }
             }
-            tree_data_2['pictures']['additionalParameters']['children']['wallpapers']['additionalParameters'] = {
-                'children': [
-                    {text: '<i class="ace-icon fa fa-picture-o green"></i> wallpaper1.jpg', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-picture-o green"></i> wallpaper2.jpg', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-picture-o green"></i> wallpaper3.jpg', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-picture-o green"></i> wallpaper4.jpg', type: 'item'}
-                ]
-            }
-            tree_data_2['pictures']['additionalParameters']['children']['camera']['additionalParameters'] = {
-                'children': [
-                    {text: '<i class="ace-icon fa fa-picture-o green"></i> photo1.jpg', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-picture-o green"></i> photo2.jpg', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-picture-o green"></i> photo3.jpg', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-picture-o green"></i> photo4.jpg', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-picture-o green"></i> photo5.jpg', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-picture-o green"></i> photo6.jpg', type: 'item'}
-                ]
+
+            //构造为树形参数
+            for (var name in files) {
+                setFileItems(files, name);
             }
 
-
-            tree_data_2['documents']['additionalParameters'] = {
-                'children': [
-                    {text: '<i class="ace-icon fa fa-file-text red"></i> document1.pdf', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-file-text grey"></i> document2.doc', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-file-text grey"></i> document3.doc', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-file-text red"></i> document4.pdf', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-file-text grey"></i> document5.doc', type: 'item'}
-                ]
-            }
-
-            tree_data_2['backup']['additionalParameters'] = {
-                'children': [
-                    {text: '<i class="ace-icon fa fa-archive brown"></i> backup1.zip', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-archive brown"></i> backup2.zip', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-archive brown"></i> backup3.zip', type: 'item'},
-                    {text: '<i class="ace-icon fa fa-archive brown"></i> backup4.zip', type: 'item'}
-                ]
-            }
-            var dataSource2 = function (options, callback) {
+            var dataSource = function (options, callback) {
                 var $data = null
                 if (!("text" in options) && !("type" in options)) {
-                    $data = tree_data_2;//the root tree
+                    $data = files;//the root tree
                     callback({data: $data});
                     return;
                 }
@@ -312,13 +313,13 @@
                         $data = options.additionalParameters.children || {};
                     else $data = {}//no data
                 }
-
-
-
+                if ($data != null) {
+                    setTimeout(function () {
+                        callback({data: $data});
+                    }, 0);
+                }
             }
-
-
-            return dataSource2
+            return dataSource
         }
 
     });
