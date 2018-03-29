@@ -93,7 +93,7 @@
                                                 文件列表
                                             </div>
                                             <div class="col-xs-6 com-sm-6 text-right">
-                                                <span class="smaller-20"  >
+                                                <span class="smaller-20">
                                                     总共：25.6 GB
                                                 </span>
                                             </div>
@@ -118,7 +118,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row" id="downLoadUrlDiv">
                             <div class="col-xs-12">
                                 <div class="widget-box widget-color-blue3">
                                     <div class="widget-header">
@@ -131,22 +131,51 @@
 
                                         <div class="tabbable tabs-below">
                                             <div class="tab-content">
-                                                <div class="tab-pane active" id="sourceUrl" >
-                                                    <p>原地址</p>
+                                                <div class="tab-pane active " id="sourceUrl">
+                                                    <div class="input-group">
+                                                        <input class="form-control" type="text" readonly=""
+                                                               value="原始地址"/>
+                                                        <span class="input-group-btn">
+                                                            <button class="btn btn-sm btn-default" type="button">
+                                                                <i class="ace-icon fa fa-copy bigger-110"></i>
+                                                                复制
+                                                            </button>
+                                                        </span>
+                                                    </div>
                                                 </div>
 
-                                                <div class="tab-pane" id="xunleiUrl" >
-                                                    <p>xunlei</p>
+                                                <div class="tab-pane" id="xunleiUrl">
+                                                    <div class="input-group">
+                                                        <input class="form-control" type="text" readonly=""
+                                                               value="迅雷地址!"/>
+                                                        <span class="input-group-btn">
+                                                            <button id="copyXunleiBtn" class="btn btn-sm btn-default"
+                                                                    type="button">
+                                                                <i class="ace-icon fa fa-copy bigger-110"></i>
+                                                                复制
+                                                            </button>
+                                                        </span>
+                                                    </div>
                                                 </div>
 
                                                 <div class="tab-pane" id="xuanfengUrl">
-                                                    <p>xuanfeng</p>
+                                                    <div class="input-group">
+                                                        <input class="form-control" type="text" readonly=""
+                                                               value="旋风地址!"/>
+                                                        <span class="input-group-btn">
+                                                            <button class="btn btn-sm btn-default" type="button">
+                                                                <i class="ace-icon fa fa-copy bigger-110"></i>
+                                                                复制
+                                                            </button>
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <ul class="nav nav-tabs">
                                                 <li class="active">
-                                                    <a data-toggle="tab" href="#sourceUrl" aria-expanded="false">原始地址</a>
+                                                    <a data-toggle="tab" href="#sourceUrl"
+                                                       aria-expanded="false">原始地址</a>
                                                 </li>
 
                                                 <li class="">
@@ -195,7 +224,6 @@
 
 <!--[if !IE]> -->
 <script src="assets/js/jquery-2.1.4.min.js"></script>
-
 <!-- <![endif]-->
 
 <!--[if IE]>
@@ -213,6 +241,7 @@
 <script src="assets/js/ace-elements.min.js"></script>
 <script src="assets/js/ace.min.js"></script>
 <script src="assets/js/fileType.js"></script>
+
 
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
@@ -324,5 +353,25 @@
 
     });
 </script>
+
+<script>
+    $(function () {
+        // 鼠标移动上去则自动选择内容
+        $('#downLoadUrlDiv').find('[type="text"]').mousemove(function () {
+            $(this).select();
+        });
+
+        //点击复制
+        $('#downLoadUrlDiv').find('button').click(function () {
+            $(this).parent().parent().find("input").select();
+            if (document.execCommand('copy')) {
+                alert("复制成功")
+            }
+        });
+
+    });
+
+</script>
+
 </body>
 </html>
