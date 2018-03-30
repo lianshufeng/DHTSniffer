@@ -234,6 +234,11 @@ export default {
       })
     },
     requestSearch: function (keyWord, pageNum) {
+      if (this.lastAccessQuery.name === keyWord && this.lastAccessQuery.page === pageNum) {
+        return
+      }
+      this.lastAccessQuery.name = keyWord
+      this.lastAccessQuery.page = pageNum
       // console.log('keyWord : ' + keyWord + ' page : ' + pageNum)
       let size = 10
       let me = this
@@ -280,7 +285,11 @@ export default {
         //   time: '2017-09-06'
         // }
       ],
-      screenWidth: document.body.clientWidth
+      screenWidth: document.body.clientWidth,
+      lastAccessQuery: {
+        name: null,
+        page: null
+      }
     }
   },
   mounted: function () {
