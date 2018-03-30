@@ -1,50 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" lang="cn">
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta charset="utf-8"/>
-    <title>金牌找你妹《【蚂蚁仔www.mayizai.com】[祖宗十九代][HDTC-MP4-1.50GB][国语中字][1080P]》</title>
+    <title th:text="金牌找你妹《+${record.title}+》">title</title>
+    <meta name="description"
+          content="金牌找你妹"  th:content="'金牌找你妹,' +${record.title}" />
+    <meta name="keywords" th:content="'金牌找你妹,'+${record.title}+',BT,磁力链,番号,免费,在线播放'"/>
 
-    <meta name="description" content="with selectable elements and custom icons"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 
     <!-- bootstrap & fontawesome -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="assets/font-awesome/4.5.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css"
+          th:href="@{/resources/assets/css/bootstrap.min.css}"/>
+    <link rel="stylesheet"
+          href="assets/font-awesome/4.5.0/css/font-awesome.min.css"
+          th:href="@{/resources/assets/font-awesome/4.5.0/css/font-awesome.min.css}"/>
 
     <!-- page specific plugin styles -->
 
     <!-- text fonts -->
 
     <!-- ace styles -->
-    <link rel="stylesheet" href="assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style"/>
+    <link rel="stylesheet" href="assets/css/ace.min.css"
+          th:href="@{/resources/assets/css/ace.min.css}"
+          class="ace-main-stylesheet" id="main-ace-style"/>
 
     <!--[if lte IE 9]>
     <link rel="stylesheet" href="assets/css/ace-part2.min.css" class="ace-main-stylesheet"/>
     <![endif]-->
-    <link rel="stylesheet" href="assets/css/ace-skins.min.css"/>
-    <link rel="stylesheet" href="assets/css/ace-rtl.min.css"/>
+    <link rel="stylesheet" href="assets/css/ace-skins.min.css"
+          th:href="@{/resources/assets/css/ace-skins.min.css}"/>
+    <link rel="stylesheet" href="assets/css/ace-rtl.min.css"
+          th:href="@{/resources/assets/css/ace-rtl.min.css}"/>
 
     <!--[if lte IE 9]>
-    <link rel="stylesheet" href="assets/css/ace-ie.min.css"/>
+    <link rel="stylesheet" href="assets/css/ace-ie.min.css" th:href="@{/resources/assets/css/ace-ie.min.css}"/>
     <![endif]-->
 
     <!-- inline styles related to this page -->
 
     <!-- ace settings handler -->
-    <script src="assets/js/ace-extra.min.js"></script>
+    <script src="assets/js/ace-extra.min.js"
+            th:src="@{/resources/assets/js/ace-extra.min.js}"></script>
 
     <!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
     <!--[if lte IE 8]>
-    <script src="assets/js/html5shiv.min.js"></script>
-    <script src="assets/js/respond.min.js"></script>
+    <script src="assets/js/html5shiv.min.js" th:src="@{/resources/assets/js/html5shiv.min.js}"></script>
+    <script src="assets/js/respond.min.js" th:src="@{/resources/assets/js/respond.min.js}"></script>
     <![endif]-->
 </head>
 
 <body class="no-skin">
 
-
+<input type="hidden" id="hostServer" value="http://www.jpznm.com/"
+       th:value="@{/}"/>
 <div class="main-container ace-save-state" id="main-container">
     <script type="text/javascript">
         try {
@@ -56,60 +69,65 @@
 
     <div class="main-content">
         <div class="main-content-inner">
-            <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+            <div class="breadcrumbs ace-save-state  " >
 
+
+
+                <div class="text-center">
+                    <span th:text="${record.title}" class="bigger-130" style="color: #382800">
+                        Dexter.S05.Season.5.1080p.5.1Ch.BluRay.ReEnc-DeeJayAhmed
+                    </span>
+                </div>
 
                 <div class="nav-search" id="nav-search">
-                    <form class="form-search">
-								<span class="input-icon">
-									<input type="text" placeholder="Search ..." class="nav-search-input"
-                                           id="nav-search-input" autocomplete="off"/>
-									<i class="ace-icon fa fa-search nav-search-icon"></i>
-								</span>
-                    </form>
-                </div><!-- /.nav-search -->
+                    <div class="form-search">
+							<span class="input-icon">
+                                <input type="text" placeholder="搜搜看..." class="nav-search-input"
+                                       id="searchNewWord"
+                                       autocomplete="off"/>
+                                <i class="ace-icon fa fa-search nav-search-icon"></i>
+							</span>
+                    </div>
+                </div>
+
+
+
+
+
+
+
             </div>
 
             <div class="page-content">
 
-                <div class="page-header">
-                    <h1 class="text-center">
-                        <small>
-                            【蚂蚁仔www.mayizai.com】[祖宗十九代][HDTC-MP4-1.50GB][国语中字][1080P]
-                        </small>
-                    </h1>
-                </div><!-- /.page-header -->
+                <!--<div class="page-header">-->
+                <!--<h1 class="text-center">-->
+                <!--<small th:text="${record.title}">title</small>-->
+                <!--</h1>-->
+                <!--</div>-->
+
 
                 <div class="row">
                     <div class="col-xs-12">
                         <!-- PAGE CONTENT BEGINS -->
-
                         <div class="row">
                             <div class="col-xs-12">
                                 <div class="widget-box widget-color-blue3">
                                     <div class="widget-header">
                                         <h4 class="widget-title lighter smaller">
-                                            <div class="col-xs-6 com-sm-6">
-                                                文件列表
-                                            </div>
+                                            <div class="col-xs-6 com-sm-6">文件列表</div>
                                             <div class="col-xs-6 com-sm-6 text-right">
-                                                <span class="smaller-20">
-                                                    总共：25.6 GB
-                                                </span>
+													<span class="smaller-20" th:text=${record.totalSize}>总共： 25.6 GB
+													</span>
                                             </div>
-
                                         </h4>
                                     </div>
 
                                     <div class="widget-body">
                                         <div class="widget-main padding-8">
                                             <div id="fileManager">
-                                                <ul style="display: none">
-                                                    <li>/aaaa/444/22.jpg</li>
-                                                    <li>/aaaa/444/11.mp4</li>
-                                                    <li>11.jpg</li>
-                                                    <li>222/11</li>
-                                                    <li>/aaaa/33/22/11.jpg</li>
+                                                <ul style="display: none" th:each="f:${record.files}">
+                                                    <li th:text="${f.path}">/list/11/22.jpg</li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -118,12 +136,13 @@
                             </div>
                         </div>
 
+                        <div class="space"></div>
                         <div class="row" id="downLoadUrlDiv">
                             <div class="col-xs-12">
                                 <div class="widget-box widget-color-blue3">
                                     <div class="widget-header">
                                         <h4 class="widget-title lighter smaller">
-                                            下载地址
+                                            <div class="col-xs-6 com-sm-6">下载地址</div>
                                         </h4>
                                     </div>
 
@@ -134,58 +153,67 @@
                                                 <div class="tab-pane active " id="sourceUrl">
                                                     <div class="input-group">
                                                         <input class="form-control" type="text" readonly=""
-                                                               value="原始地址"/>
+                                                               value="原始地址" th:value="${record.url.source}"/>
                                                         <span class="input-group-btn">
-                                                            <button class="btn btn-sm btn-default" type="button">
-                                                                <i class="ace-icon fa fa-copy bigger-110"></i>
-                                                                复制
-                                                            </button>
-                                                        </span>
+																<button class="btn btn-sm btn-default" type="button">
+																	<i class="ace-icon fa fa-copy bigger-110"></i> 复制
+																</button>
+															</span>
                                                     </div>
                                                 </div>
 
                                                 <div class="tab-pane" id="xunleiUrl">
                                                     <div class="input-group">
                                                         <input class="form-control" type="text" readonly=""
-                                                               value="迅雷地址!"/>
-                                                        <span class="input-group-btn">
-                                                            <button id="copyXunleiBtn" class="btn btn-sm btn-default"
-                                                                    type="button">
-                                                                <i class="ace-icon fa fa-copy bigger-110"></i>
-                                                                复制
-                                                            </button>
-                                                        </span>
+                                                               value="迅雷地址" th:value="${record.url.xunlei}"/> <span
+                                                            class="input-group-btn">
+																<button id="copyXunleiBtn"
+                                                                        class="btn btn-sm btn-default" type="button">
+																	<i class="ace-icon fa fa-copy bigger-110"></i> 复制
+																</button>
+															</span>
                                                     </div>
                                                 </div>
 
                                                 <div class="tab-pane" id="xuanfengUrl">
                                                     <div class="input-group">
                                                         <input class="form-control" type="text" readonly=""
-                                                               value="旋风地址!"/>
-                                                        <span class="input-group-btn">
-                                                            <button class="btn btn-sm btn-default" type="button">
-                                                                <i class="ace-icon fa fa-copy bigger-110"></i>
-                                                                复制
-                                                            </button>
-                                                        </span>
+                                                               value="旋风地址" th:value="${record.url.xuanfeng}"/> <span
+                                                            class="input-group-btn">
+																<button class="btn btn-sm btn-default" type="button">
+																	<i class="ace-icon fa fa-copy bigger-110"></i> 复制
+																</button>
+															</span>
                                                     </div>
                                                 </div>
+
+                                                <div class="tab-pane" id="kuaicheUrl">
+                                                    <div class="input-group">
+                                                        <input class="form-control" type="text" readonly=""
+                                                               value="快车地址" th:value="${record.url.kuaiche}"/> <span
+                                                            class="input-group-btn">
+																<button class="btn btn-sm btn-default" type="button">
+																	<i class="ace-icon fa fa-copy bigger-110"></i> 复制
+																</button>
+															</span>
+                                                    </div>
+                                                </div>
+
                                             </div>
 
                                             <ul class="nav nav-tabs">
-                                                <li class="active">
-                                                    <a data-toggle="tab" href="#sourceUrl"
-                                                       aria-expanded="false">原始地址</a>
+                                                <li class="active"><a data-toggle="tab"
+                                                                      href="#sourceUrl" aria-expanded="false">原始地址</a>
                                                 </li>
 
-                                                <li class="">
-                                                    <a data-toggle="tab" href="#xunleiUrl" aria-expanded="true">迅雷地址</a>
-                                                </li>
+                                                <li class=""><a data-toggle="tab" href="#xunleiUrl"
+                                                                aria-expanded="true">迅雷地址</a></li>
 
-                                                <li class="">
-                                                    <a data-toggle="tab" href="#xuanfengUrl"
-                                                       aria-expanded="false">旋风地址</a>
-                                                </li>
+                                                <li class=""><a data-toggle="tab" href="#xuanfengUrl"
+                                                                aria-expanded="false">旋风地址</a></li>
+
+                                                <li class=""><a data-toggle="tab" href="#kuaicheUrl"
+                                                                aria-expanded="false">快车地址</a></li>
                                             </ul>
                                         </div>
 
@@ -195,58 +223,100 @@
                             </div>
                         </div>
 
+                        <div class="space"></div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="widget-box widget-color-blue3">
+                                    <div class="widget-header">
+                                        <h4 class="widget-title lighter smaller">
+                                            <div class="col-xs-6 com-sm-6">热门搜索</div>
+                                        </h4>
+                                    </div>
+
+                                    <div class="widget-body">
+                                        <div class="tabbable tabs-below">
+                                            <div class="tab-content">
+                                                <div id="openLinkDiv"></div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
 
                         <!-- PAGE CONTENT ENDS -->
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-            </div><!-- /.page-content -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.page-content -->
         </div>
-    </div><!-- /.main-content -->
+    </div>
+    <!-- /.main-content -->
+
 
     <div class="footer">
+
+
         <div class="footer-inner">
             <div class="footer-content">
                 <div class="row">
-							<span class="bigger-120">
-							<span class="blue bolder">©2018 金牌找你妹</span>
+						<span class="bigger-120"> <span class="blue bolder">©2018
+								金牌找你妹</span>
 						</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    <a href="#" id="btn-scroll-up"
+       class="btn-scroll-up btn btn-sm btn-inverse"> <i
+            class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
     </a>
-</div><!-- /.main-container -->
+</div>
+<!-- /.main-container -->
 
 <!-- basic scripts -->
 
 <!--[if !IE]> -->
-<script src="assets/js/jquery-2.1.4.min.js"></script>
+<script src="assets/js/jquery-2.1.4.min.js"
+        th:src="@{/resources/assets/js/jquery-2.1.4.min.js}"></script>
 <!-- <![endif]-->
 
 <!--[if IE]>
-<script src="assets/js/jquery-1.11.3.min.js"></script>
+<script src="assets/js/jquery-1.11.3.min.js" th:src="@{/resources/assets/js/jquery-1.11.3.min.js}"></script>
 <![endif]-->
 <script type="text/javascript">
-    if ('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
+    if ('ontouchstart' in document.documentElement) {
+        document.write('<script src='
+            + document.getElementById('hostServer').value
+            + '"assets/js/jquery.mobile.custom.min.js">'
+            + '<' + '/script>');
+    }
 </script>
-<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/bootstrap.min.js"
+        th:src="@{/resources/assets/js/bootstrap.min.js}"></script>
 
 <!-- page specific plugin scripts -->
-<script src="assets/js/tree.min.js"></script>
+<script src="assets/js/tree.min.js"
+        th:src="@{/resources/assets/js/tree.min.js}"></script>
 
 <!-- ace scripts -->
-<script src="assets/js/ace-elements.min.js"></script>
-<script src="assets/js/ace.min.js"></script>
-<script src="assets/js/fileType.js"></script>
+<script src="assets/js/ace-elements.min.js"
+        th:src="@{/resources/assets/js/ace-elements.min.js}"></script>
+<script src="assets/js/ace.min.js"
+        th:src="@{/resources/assets/js/ace.min.js}"></script>
+<script src="assets/js/fileType.js"
+        th:src="@{/resources/assets/js/fileType.js}"></script>
 
 
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
     jQuery(function ($) {
-
 
         var fileType = new FileTypeICon();
         /**
@@ -259,8 +329,13 @@
             //没有子文件
             if (JSON.stringify(info) == '{}') {
                 var extAt = name.lastIndexOf('.');
-                var extName = extAt == -1 ? '' : name.substring(extAt + 1, name.length);
-                info = {text: '<i class="ace-icon fa ' + fileType.get(extName) + '"></i> ' + name, type: 'item'}
+                var extName = extAt == -1 ? '' : name.substring(extAt + 1,
+                    name.length);
+                info = {
+                    text: '<i class="ace-icon fa ' + fileType.get(extName)
+                    + '"></i> ' + name,
+                    type: 'item'
+                }
                 item[name] = info;
             } else {
                 var itemNames = [];
@@ -270,35 +345,37 @@
                     // info['additionalParameters']['children'].push(info[i]);
                     // delete info[i]
                 }
-                info['additionalParameters'] = {'children': []};
+                info['additionalParameters'] = {
+                    'children': []
+                };
                 info['text'] = name;
                 info['type'] = 'folder';
                 for (var i in itemNames) {
-                    info['additionalParameters']['children'].push(info[itemNames[i]]);
+                    info['additionalParameters']['children']
+                        .push(info[itemNames[i]]);
                     delete info[itemNames[i]]
                 }
             }
         }
 
-
         var fileManager = $('#fileManager');
-        fileManager.ace_tree({
-            dataSource: initiateDemoData(fileManager),
-            loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
-            'open-icon': 'ace-icon fa fa-folder-open',
-            'close-icon': 'ace-icon fa fa-folder',
-            'itemSelect': true,
-            'folderSelect': true,
-            'multiSelect': true,
-            'selected-icon': null,
-            'unselected-icon': null,
-            'folder-open-icon': 'ace-icon tree-plus',
-            'folder-close-icon': 'ace-icon tree-minus'
-        });
+        fileManager
+            .ace_tree({
+                dataSource: initiateDemoData(fileManager),
+                loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
+                'open-icon': 'ace-icon fa fa-folder-open',
+                'close-icon': 'ace-icon fa fa-folder',
+                'itemSelect': true,
+                'folderSelect': true,
+                'multiSelect': true,
+                'selected-icon': null,
+                'unselected-icon': null,
+                'folder-open-icon': 'ace-icon tree-plus',
+                'folder-close-icon': 'ace-icon tree-minus'
+            });
 
         //默认展开一层
         fileManager.tree('discloseVisible');
-
 
         function initiateDemoData(element) {
             // list转换字典对象
@@ -334,17 +411,22 @@
                 var $data = null
                 if (!("text" in options) && !("type" in options)) {
                     $data = files;//the root tree
-                    callback({data: $data});
+                    callback({
+                        data: $data
+                    });
                     return;
-                }
-                else if ("type" in options && options.type == "folder") {
-                    if ("additionalParameters" in options && "children" in options.additionalParameters)
+                } else if ("type" in options && options.type == "folder") {
+                    if ("additionalParameters" in options
+                        && "children" in options.additionalParameters)
                         $data = options.additionalParameters.children || {};
-                    else $data = {}//no data
+                    else
+                        $data = {}//no data
                 }
                 if ($data != null) {
                     setTimeout(function () {
-                        callback({data: $data});
+                        callback({
+                            data: $data
+                        });
                     }, 0);
                 }
             }
@@ -370,8 +452,61 @@
         });
 
     });
-
 </script>
+
+
+<script>
+    // 打开快捷方式
+    $(function () {
+        var colors = ['btn-info', 'btn-danger', 'btn-yellow', 'btn-pink',
+            'btn-purple', 'btn-inverse', 'btn-default', 'btn-grey',
+            'btn-light'];
+        var host = $('#hostServer').val();
+        $.ajax({
+            method: "post",
+            dataType: "json",
+            url: host + "store/hotWords.json",
+            data: {
+                count: 15
+            },
+            success: function (data) {
+                if (data.invokerResult.content == null) {
+                    return false;
+                }
+                for (var i in data.invokerResult.content) {
+                    var item = data.invokerResult.content[i];
+                    $('#openLinkDiv').append(
+                        '<button type="button" style="margin: 2px" class="btn btn-white  '
+                        + colors[i % colors.length] + '">'
+                        + item.name + '</button>');
+                }
+                //绑定事件
+                $('#openLinkDiv').find('button').click(function () {
+                    var url = host + 'index.html#/s/' + $(this).html();
+                    window.open(url);
+                });
+            }
+
+        });
+
+    });
+</script>
+
+<script>
+    // 右上角搜索功能
+    $(function () {
+        var host = $('#hostServer').val();
+        $('#searchNewWord').keydown(
+            function (event) {
+                if (event.keyCode == "13") {
+                    var url = host + 'index.html#/s/'
+                        + $('#searchNewWord').val();
+                    window.open(url);
+                }
+            })
+    });
+</script>
+
 
 </body>
 </html>
