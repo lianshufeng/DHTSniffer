@@ -85,7 +85,7 @@ public class RecordService {
 	 * @param page
 	 * @param size
 	 */
-	@CacheMethod(collectionName = "Record_search", overflowToDisk = true, maxMemoryCount = 100, timeToIdleSeconds = 180, timeToLiveSeconds = 180)
+	@CacheMethod(collectionName = "Record_search", overflowToDisk = true, maxMemoryCount = 100, timeToIdleSeconds = 300, timeToLiveSeconds = 300)
 	public SearchResult search(@CacheParameter String wd, @CacheParameter Integer page, @CacheParameter Integer size,
 			@CacheParameter String preTag, @CacheParameter String postTag) {
 		// 开始记录数
@@ -102,7 +102,7 @@ public class RecordService {
 	 * @param day
 	 * @return
 	 */
-	@CacheMethod(collectionName = "Record_getHotWords", overflowToDisk = true, maxMemoryCount = 100, timeToIdleSeconds = 180, timeToLiveSeconds = 180)
+	@CacheMethod(collectionName = "Record_getHotWords", overflowToDisk = true, maxMemoryCount = 100, timeToIdleSeconds = 600, timeToLiveSeconds = 600)
 	public List<HotWord> getHotWords(Integer maxSize, Integer day) {
 		return this.hotWordsDao.list(maxSize, day);
 	}

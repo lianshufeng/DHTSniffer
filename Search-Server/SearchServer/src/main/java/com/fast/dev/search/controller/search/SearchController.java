@@ -55,7 +55,7 @@ public class SearchController {
 
 	@RequestMapping("hotWords.json")
 	public InvokerResult<Object> hotWords(Integer count) {
-		List<HotWord> result = this.recordService.getHotWords(count, 7);
+		List<HotWord> result = this.recordService.getHotWords(count == null ? 10 : count, 7);
 		return new InvokerResult<Object>(result);
 	}
 
