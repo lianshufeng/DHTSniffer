@@ -10,6 +10,7 @@ var FileTypeICon = function () {
         'wmv':'fa-music blue',
 
         'mp4':'fa-film blue',
+        'mkv':'fa-film blue',
         'rmvb':'fa-film blue',
         'rm':'fa-film blue',
         'avi':'fa-film blue',
