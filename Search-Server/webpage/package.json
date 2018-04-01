@@ -3,8 +3,21 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "build": "webpack",
+    "test": "browserify "
   },
-  "dependencies": {
-
+  "dependencies": {},
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "webpack": "^4.4.1",
+    "glob": "^7.1.2",
+    "webpack-cli": "^2.0.13",
+    "copy-webpack-plugin": "^4.5.1",
+    "uglifyjs-webpack-plugin": "^1.2.4",
+    "clean-webpack-plugin": "^0.1.19",
+    "html-webpack-plugin": "^3.1.0",
+    "html-loader": "^0.5.5"
   }
 }

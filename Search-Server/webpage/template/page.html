@@ -6,7 +6,7 @@
     <meta charset="utf-8"/>
     <title th:text="金牌找你妹《+${record.title}+》">title</title>
     <meta name="description"
-          content="金牌找你妹"  th:content="'金牌找你妹,' +${record.title}" />
+          content="金牌找你妹" th:content="'金牌找你妹,' +${record.title}"/>
     <meta name="keywords" th:content="'金牌找你妹,'+${record.title}+',BT,磁力链,番号,免费,在线播放'"/>
 
     <meta name="viewport"
@@ -37,7 +37,8 @@
           th:href="@{/resources/assets/css/ace-rtl.min.css}"/>
 
     <!--[if lte IE 9]>
-    <link rel="stylesheet" href="assets/css/ace-ie.min.css" th:href="@{/resources/assets/css/ace-ie.min.css}"/>
+    <link rel="stylesheet" href="assets/css/ace-ie.min.css"
+          th:href="@{/resources/assets/css/ace-ie.min.css}"/>
     <![endif]-->
 
     <!-- inline styles related to this page -->
@@ -69,8 +70,7 @@
 
     <div class="main-content">
         <div class="main-content-inner">
-            <div class="breadcrumbs ace-save-state  " >
-
+            <div class="breadcrumbs ace-save-state  ">
 
 
                 <div class="text-center">
@@ -89,11 +89,6 @@
 							</span>
                     </div>
                 </div>
-
-
-
-
-
 
 
             </div>
@@ -117,7 +112,7 @@
                                         <h4 class="widget-title lighter smaller">
                                             <div class="col-xs-6 com-sm-6">文件列表</div>
                                             <div class="col-xs-6 com-sm-6 text-right">
-													<span class="smaller-20" th:text=${record.totalSize}>总共： 25.6 GB
+													<span style="font-size: 12px" th:text=${record.totalSize}>总共： 25.6 GB
 													</span>
                                             </div>
                                         </h4>
@@ -147,16 +142,17 @@
                                     </div>
 
                                     <div class="widget-body">
-
                                         <div class="tabbable tabs-below">
                                             <div class="tab-content">
                                                 <div class="tab-pane active " id="sourceUrl">
                                                     <div class="input-group">
-                                                        <input class="form-control" type="text" readonly=""
-                                                               value="原始地址" th:value="${record.url.source}"/>
+                                                        <input id="magnetUrlText" class="form-control" type="text" readonly=""
+                                                               value="迅雷地址"
+                                                               th:value="${record.url.source}"/>
                                                         <span class="input-group-btn">
 																<button class="btn btn-sm btn-default" type="button">
-																	<i class="ace-icon fa fa-copy bigger-110"></i> 复制
+																	<i class="ace-icon fa fa-copy bigger-110"></i>
+                                                                    <span>复制</span>
 																</button>
 															</span>
                                                     </div>
@@ -165,11 +161,13 @@
                                                 <div class="tab-pane" id="xunleiUrl">
                                                     <div class="input-group">
                                                         <input class="form-control" type="text" readonly=""
-                                                               value="迅雷地址" th:value="${record.url.xunlei}"/> <span
-                                                            class="input-group-btn">
+                                                               value="迅雷地址" th:value="${record.url.xunlei}"/>
+                                                        <span
+                                                                class="input-group-btn">
 																<button id="copyXunleiBtn"
                                                                         class="btn btn-sm btn-default" type="button">
-																	<i class="ace-icon fa fa-copy bigger-110"></i> 复制
+                                                                    <i class="ace-icon fa fa-copy bigger-110"></i>
+                                                                    <span>复制</span>
 																</button>
 															</span>
                                                     </div>
@@ -181,7 +179,8 @@
                                                                value="旋风地址" th:value="${record.url.xuanfeng}"/> <span
                                                             class="input-group-btn">
 																<button class="btn btn-sm btn-default" type="button">
-																	<i class="ace-icon fa fa-copy bigger-110"></i> 复制
+                                                                    <i class="ace-icon fa fa-copy bigger-110"></i>
+                                                                    <span>复制</span>
 																</button>
 															</span>
                                                     </div>
@@ -193,7 +192,8 @@
                                                                value="快车地址" th:value="${record.url.kuaiche}"/> <span
                                                             class="input-group-btn">
 																<button class="btn btn-sm btn-default" type="button">
-																	<i class="ace-icon fa fa-copy bigger-110"></i> 复制
+																	<i class="ace-icon fa fa-copy bigger-110"></i>
+                                                                    <span>复制</span>
 																</button>
 															</span>
                                                     </div>
@@ -202,26 +202,50 @@
                                             </div>
 
                                             <ul class="nav nav-tabs">
-                                                <li class="active"><a data-toggle="tab"
-                                                                      href="#sourceUrl" aria-expanded="false">原始地址</a>
+                                                <li class="active">
+                                                    <a data-toggle="tab" href="#sourceUrl"
+                                                       aria-expanded="false">原始地址</a>
                                                 </li>
 
-                                                <li class=""><a data-toggle="tab" href="#xunleiUrl"
-                                                                aria-expanded="true">迅雷地址</a></li>
+                                                <li class="">
+                                                    <a data-toggle="tab" href="#xunleiUrl" aria-expanded="true">迅雷地址</a>
+                                                </li>
 
-                                                <li class=""><a data-toggle="tab" href="#xuanfengUrl"
-                                                                aria-expanded="false">旋风地址</a></li>
+                                                <li class="">
+                                                    <a data-toggle="tab" href="#xuanfengUrl"
+                                                       aria-expanded="false">旋风地址</a>
+                                                </li>
 
-                                                <li class=""><a data-toggle="tab" href="#kuaicheUrl"
-                                                                aria-expanded="false">快车地址</a></li>
+                                                <li class="">
+                                                    <a data-toggle="tab" href="#kuaicheUrl"
+                                                       aria-expanded="false">快车地址</a>
+                                                </li>
                                             </ul>
                                         </div>
-
-
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!--判断磁力连在线播放-->
+                        <div id="vedioPlayerContent" style="display: none">
+                            <div class="space"></div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="widget-box widget-color-blue3">
+                                        <div class="widget-header">
+                                            <h4 class="widget-title lighter smaller">
+                                                <div class="col-xs-6 com-sm-6">在线播放</div>
+                                            </h4>
+                                        </div>
+                                        <div class="widget-body">
+                                            暂未开发
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <div class="space"></div>
                         <div class="row">
@@ -260,8 +284,6 @@
 
 
     <div class="footer">
-
-
         <div class="footer-inner">
             <div class="footer-content">
                 <div class="row">
@@ -310,202 +332,9 @@
         th:src="@{/resources/assets/js/ace-elements.min.js}"></script>
 <script src="assets/js/ace.min.js"
         th:src="@{/resources/assets/js/ace.min.js}"></script>
-<script src="assets/js/fileType.js"
-        th:src="@{/resources/assets/js/fileType.js}"></script>
 
-
-<!-- inline scripts related to this page -->
-<script type="text/javascript">
-    jQuery(function ($) {
-
-        var fileType = new FileTypeICon();
-        /**
-         * 设置文件组
-         * @param name
-         * @param item
-         */
-        var setFileItems = function (item, name) {
-            var info = item[name];
-            //没有子文件
-            if (JSON.stringify(info) == '{}') {
-                var extAt = name.lastIndexOf('.');
-                var extName = extAt == -1 ? '' : name.substring(extAt + 1,
-                    name.length);
-                info = {
-                    text: '<i class="ace-icon fa ' + fileType.get(extName)
-                    + '"></i> ' + name,
-                    type: 'item'
-                }
-                item[name] = info;
-            } else {
-                var itemNames = [];
-                for (var i in info) {
-                    setFileItems(info, i);
-                    itemNames.push(i);
-                    // info['additionalParameters']['children'].push(info[i]);
-                    // delete info[i]
-                }
-                info['additionalParameters'] = {
-                    'children': []
-                };
-                info['text'] = name;
-                info['type'] = 'folder';
-                for (var i in itemNames) {
-                    info['additionalParameters']['children']
-                        .push(info[itemNames[i]]);
-                    delete info[itemNames[i]]
-                }
-            }
-        }
-
-        var fileManager = $('#fileManager');
-        fileManager
-            .ace_tree({
-                dataSource: initiateDemoData(fileManager),
-                loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
-                'open-icon': 'ace-icon fa fa-folder-open',
-                'close-icon': 'ace-icon fa fa-folder',
-                'itemSelect': true,
-                'folderSelect': true,
-                'multiSelect': true,
-                'selected-icon': null,
-                'unselected-icon': null,
-                'folder-open-icon': 'ace-icon tree-plus',
-                'folder-close-icon': 'ace-icon tree-minus'
-            });
-
-        //默认展开一层
-        fileManager.tree('discloseVisible');
-
-        function initiateDemoData(element) {
-            // list转换字典对象
-            var files = {};
-            var lis = element.find('ul').children();
-            for (var i = 0; i < lis.size(); i++) {
-                //获取每一个文件名
-                var filePath = $(lis.get(i)).html();
-                //root级
-                var currentFiles = files;
-                //分割
-                var filePath = filePath.split("/");
-                for (var index in filePath) {
-                    var path = filePath[index];
-                    if (path == '') {
-                        continue;
-                    }
-                    var item = currentFiles[path];
-                    if (item == null) {
-                        item = {}
-                        currentFiles[path] = item;
-                    }
-                    currentFiles = item;
-                }
-            }
-
-            //构造为树形参数
-            for (var name in files) {
-                setFileItems(files, name);
-            }
-
-            var dataSource = function (options, callback) {
-                var $data = null
-                if (!("text" in options) && !("type" in options)) {
-                    $data = files;//the root tree
-                    callback({
-                        data: $data
-                    });
-                    return;
-                } else if ("type" in options && options.type == "folder") {
-                    if ("additionalParameters" in options
-                        && "children" in options.additionalParameters)
-                        $data = options.additionalParameters.children || {};
-                    else
-                        $data = {}//no data
-                }
-                if ($data != null) {
-                    setTimeout(function () {
-                        callback({
-                            data: $data
-                        });
-                    }, 0);
-                }
-            }
-            return dataSource
-        }
-
-    });
-</script>
-
-<script>
-    $(function () {
-        // 鼠标移动上去则自动选择内容
-        $('#downLoadUrlDiv').find('[type="text"]').mousemove(function () {
-            $(this).select();
-        });
-
-        //点击复制
-        $('#downLoadUrlDiv').find('button').click(function () {
-            $(this).parent().parent().find("input").select();
-            if (document.execCommand('copy')) {
-                alert("复制成功")
-            }
-        });
-
-    });
-</script>
-
-
-<script>
-    // 打开快捷方式
-    $(function () {
-        var colors = ['btn-info', 'btn-danger', 'btn-yellow', 'btn-pink',
-            'btn-purple', 'btn-inverse', 'btn-default', 'btn-grey',
-            'btn-light'];
-        var host = $('#hostServer').val();
-        $.ajax({
-            method: "post",
-            dataType: "json",
-            url: host + "store/hotWords.json",
-            data: {
-                count: 15
-            },
-            success: function (data) {
-                if (data.invokerResult.content == null) {
-                    return false;
-                }
-                for (var i in data.invokerResult.content) {
-                    var item = data.invokerResult.content[i];
-                    $('#openLinkDiv').append(
-                        '<button type="button" style="margin: 2px" class="btn btn-white  '
-                        + colors[i % colors.length] + '">'
-                        + item.name + '</button>');
-                }
-                //绑定事件
-                $('#openLinkDiv').find('button').click(function () {
-                    var url = host + 'index.html#/s/' + $(this).html();
-                    window.open(url);
-                });
-            }
-
-        });
-
-    });
-</script>
-
-<script>
-    // 右上角搜索功能
-    $(function () {
-        var host = $('#hostServer').val();
-        $('#searchNewWord').keydown(
-            function (event) {
-                if (event.keyCode == "13") {
-                    var url = host + 'index.html#/s/'
-                        + $('#searchNewWord').val();
-                    window.open(url);
-                }
-            })
-    });
-</script>
+<script src="assets/js/page.js"
+        th:src="@{/resources/assets/js/page.js}"></script>
 
 
 </body>
