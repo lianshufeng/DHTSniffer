@@ -9,6 +9,11 @@
           content="金牌找你妹" th:content="'金牌找你妹,' +${record.title}"/>
     <meta name="keywords" th:content="'金牌找你妹,'+${record.title}+',BT,磁力链,番号,免费,在线播放'"/>
 
+    <!-- 第三方客户端抓取信息-->
+    <meta itemprop="name" th:content="《+${record.title}+'》 金牌找你妹'" content="金牌找你妹，为您翻遍全世界。"/>
+    <meta itemprop="image" content="images/logo.png" th:href="@{/resources/static/images/log.png}"/>
+    <meta name="description" itemprop="description" th:content="更多免费资源请进入本站搜索"/>
+
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 
@@ -335,7 +340,6 @@
 
 <script src="assets/js/page.js"
         th:src="@{/resources/assets/js/page.js}"></script>
-
 
 </body>
 </html>
