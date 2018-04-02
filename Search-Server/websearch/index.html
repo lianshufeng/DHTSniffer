@@ -5,25 +5,31 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <meta name="format-detection" content="telphone=no, email=no"/>
-  <meta name="Keywords" content="地表最强大,磁力链,BT,种子,电影,音乐,咨询">
-  <meta name="description" content="地表最强大的中文搜索引擎，仅供海外华人服务，受当地法律保护" />
+  <meta name="Keywords" content="地表最强大,磁力链,BT,种子,电影,音乐,高清,无码">
+  <meta name="description" content="地表最强大的中文搜索引擎,免费电影,破解游戏,在线播放,高清无码"/>
+  <!-- 第三方客户端抓取信息-->
+  <meta itemprop="name" content="金牌找你妹，为您翻遍全世界。"/>
+  <meta itemprop="image" content="images/logo.png" th:href="@{/resources/static/images/log.png}"/>
+  <meta name="description" itemprop="description" content="竭诚为您提供免费的电影、游戏、音乐搜索服务"/>
   <title>金牌找你妹，竭诚为您提供搜索服务。</title>
   <!-- 引入样式文件 -->
   <% for (var css in htmlWebpackPlugin.files.css) { %>
-  <link href=".${htmlWebpackPlugin.files.css[css]}" rel="stylesheet" th:href="@{/resources${htmlWebpackPlugin.files.css[css]}}" >
+  <link href=".${htmlWebpackPlugin.files.css[css]}" rel="stylesheet"
+        th:href="@{/resources${htmlWebpackPlugin.files.css[css]}}">
   <% } %>
   <!-- jquery -->
   <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="//cdn.polyfill.io/v1/polyfill.min.js" async defer></script>
 </head>
 <body>
-  <!-- 主机地址-->
-  <input type="hidden" id="HostUrl" value="http://127.0.0.1:8080/PServer/" th:value="@{/}"/>
-  <!-- 视图 -->
-  <div id="app"></div>
-  <!-- 引入依赖js -->
-  <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
-    <script type="text/javascript" src=".${htmlWebpackPlugin.files.chunks[chunk].entry}" th:src="@{/resources${htmlWebpackPlugin.files.chunks[chunk].entry}}"></script>
-  <% } %>
+<!-- 主机地址-->
+<input type="hidden" id="HostUrl" value="http://127.0.0.1:8080/PServer/" th:value="@{/}"/>
+<!-- 视图 -->
+<div id="app"></div>
+<!-- 引入依赖js -->
+<% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+<script type="text/javascript" src=".${htmlWebpackPlugin.files.chunks[chunk].entry}"
+        th:src="@{/resources${htmlWebpackPlugin.files.chunks[chunk].entry}}"></script>
+<% } %>
 </body>
 </html>
