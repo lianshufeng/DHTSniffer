@@ -20,7 +20,7 @@ export default {
       oHead.appendChild(oScript)
     },
     start: function () {
-      this.baidu()
+      // this.baidu()
       this.cnzz()
     }
   }
