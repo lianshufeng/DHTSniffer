@@ -8,7 +8,8 @@ PUT /resstore
 PUT /resstore/_settings
 {
   "index.mapping.total_fields.limit": 102400,
-  "index.refresh_interval": "120s"
+  "index.refresh_interval": "120s",
+  "max_result_window" : 1000000
 }
 
 

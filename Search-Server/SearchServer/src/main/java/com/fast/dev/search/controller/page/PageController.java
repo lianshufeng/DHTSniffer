@@ -1,7 +1,10 @@
 package com.fast.dev.search.controller.page;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +27,17 @@ public class PageController {
 	private RecordService recordService;
 
 	@RequestMapping("{id}.html")
-	public ModelAndView view(@PathVariable String id) {
+	public ModelAndView view(HttpServletResponse response, @PathVariable String id) throws IOException {
+		if (id == null) {
+			response.sendError(404);
+			return null;
+		}
 		ModelAndView modelAndView = new ModelAndView("page.htl");
 		RecordInfo recordInfo = this.recordService.page(id);
+		if (recordInfo == null) {
+			response.sendError(404);
+			return null;
+		}
 		modelAndView.addObject("record", record(recordInfo));
 		// if (recordInfo != null) {
 		// try {
