@@ -73,9 +73,13 @@
           </div>
 
           <div id="Page_page_list">
+            <!-- 首页 -->
+            <template>
+              <span class="Page_up_page" v-show="page.current > 1"  v-on:click="skipPage(1)" >首页</span>
+            </template>
             <!-- 上一页渲染 -->
             <template>
-              <span class="Page_up_page" v-show="page.current > 1"  v-on:click="skipPage(page.current-1)" >上一页</span>
+              <span class="Page_up_page" v-show="page.current > 1"  v-on:click="skipPage(page.current-1)" >上页</span>
             </template>
             <!-- 页码的渲染-->
             <!-- 前面页码 -->
@@ -96,7 +100,11 @@
             </template>
             <!-- 下一页的渲染 -->
             <template>
-              <span class="Page_next_page" v-show="page.current < page.total" v-on:click="skipPage(page.current+1)">下一页</span>
+              <span class="Page_next_page" v-show="page.current < page.total" v-on:click="skipPage(page.current+1)">下页</span>
+            </template>
+            <!-- 末页 -->
+            <template>
+              <span class="Page_up_page" v-show="page.current < page.total"  v-on:click="skipPage(page.total)" >尾页</span>
             </template>
           </div>
         </div>
@@ -352,9 +360,11 @@ export default {
     font: 14px arial;
     display: inline-block;
     text-align: center;
-    height: 34px;
     line-height: 34px;
-    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    /*height: 34px;*/
+    /*width: 34px;*/
     border: 1px solid #e1e2e3;
     margin-right: 4px;
     color: #5a5a58;

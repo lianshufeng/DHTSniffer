@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import seo from './seo'
 
 Vue.config.productionTip = false
 
@@ -13,3 +14,6 @@ new Vue({
   components: {App},
   template: '<App/>'
 })
+
+// seo统计
+seo.methods.start()
