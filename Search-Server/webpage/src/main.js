@@ -1,6 +1,6 @@
+require('./seo.js');
+
 var FileTypeICon = require('./FileTypeICon.js');
-
-
 
 /**
  * 展示文件列表
@@ -120,6 +120,13 @@ $(function ($) {
  * 复制下载地址
  */
 $(function () {
+
+    //鼠标移动自动切换tab
+    $('#downLoadUrlDiv').find('.nav,.nav-tabs').find('a').mousemove(function () {
+        $(this).trigger('click');
+    });
+
+    //鼠标移动上自动选择
     $('#downLoadUrlDiv').find('[type="text"]').mousemove(function () {
         $(this).select();
     });
@@ -187,7 +194,7 @@ $(function () {
  * 在线播放，暂不实现
  */
 $(function () {
-    let isShowPlayer  = false;
+    let isShowPlayer = false;
     let magnetUrl = $('#magnetUrlText').val();
     //判断下载地址是否磁力连
     if (magnetUrl.toLowerCase().indexOf("magnet:?xt=") == 0) {
@@ -195,11 +202,11 @@ $(function () {
     }
 
     //播放显示
-    if (isShowPlayer){
+    if (isShowPlayer) {
         // $('#vedioPlayerContent').show();
     }
 
-    if (isShowPlayer){
+    if (isShowPlayer) {
 
     }
 
