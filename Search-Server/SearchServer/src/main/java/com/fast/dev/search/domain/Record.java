@@ -20,7 +20,8 @@ public class Record {
 	private String title;
 	// 索引关键词
 	private String index;
-	//点击次数
+	// 点击次数
+	@Indexed
 	private long hit;
 	// 原始下载地址
 	@Indexed(unique = true)
@@ -172,12 +173,11 @@ public class Record {
 	}
 
 	/**
-	 * @param hit the hit to set
+	 * @param hit
+	 *            the hit to set
 	 */
 	public void setHit(long hit) {
 		this.hit = hit;
 	}
-	
-	
 
 }

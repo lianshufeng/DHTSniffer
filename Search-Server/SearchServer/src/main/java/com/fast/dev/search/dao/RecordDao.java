@@ -2,9 +2,11 @@ package com.fast.dev.search.dao;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -54,6 +56,22 @@ public class RecordDao extends SuperDao<Record> {
 	}
 
 	/**
+	 * 增量更新inc
+	 * 
+	 * @param ref
+	 * @param incCount
+	 */
+	public void setHit(Map<String, Long> updateMap) {
+		Map<String, Object> sources = new HashMap<>();
+		for (Entry<String, Long> entry : updateMap.entrySet()) {
+			Map<String, Object> update = new HashMap<>();
+			update.put("hit", entry.getValue());
+			sources.put(entry.getKey(), update);
+		}
+		this.esDao.update(sources);
+	}
+
+	/**
 	 * 分页查询
 	 * 
 	 * @param wd
@@ -73,8 +91,10 @@ public class RecordDao extends SuperDao<Record> {
 
 		// 排序
 		List<QuerySort> querySorts = new ArrayList<>();
+		if (!StringUtils.isEmpty(wd)) {
+			querySorts.add(new QuerySort("hit", SortOrder.DESC));
+		}
 		querySorts.add(new QuerySort("createTime", SortOrder.DESC));
-		querySorts.add(new QuerySort("hit", SortOrder.DESC));
 
 		// 高亮规则
 		List<QueryHighlight> queryHighlights = new ArrayList<>();

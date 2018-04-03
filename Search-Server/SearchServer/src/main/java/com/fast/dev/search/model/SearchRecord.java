@@ -2,10 +2,12 @@ package com.fast.dev.search.model;
 
 import java.io.Serializable;
 
-public class SearchRecord implements Serializable{
+public class SearchRecord implements Serializable {
 	private static final long serialVersionUID = 1L;
 	// 记录ID
 	private String id;
+	// mongoID
+	private String ref;
 	// 文件类型
 	private String[] type;
 	// 文件总大小
@@ -122,6 +124,14 @@ public class SearchRecord implements Serializable{
 	 */
 	public void setLike(String like) {
 		this.like = like;
+	}
+
+	public String getRef() {
+		return ref;
+	}
+
+	public void setRef(String ref) {
+		this.ref = ref;
 	}
 
 	// id: 1,

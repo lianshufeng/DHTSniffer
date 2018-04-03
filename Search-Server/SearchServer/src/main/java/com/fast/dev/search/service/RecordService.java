@@ -31,7 +31,6 @@ import com.fast.dev.search.dao.RecordInfoDao;
 import com.fast.dev.search.domain.HotWord;
 import com.fast.dev.search.domain.Record;
 import com.fast.dev.search.domain.RecordInfo;
-import com.fast.dev.search.helper.YouDaoWordHelper;
 import com.fast.dev.search.model.FileModel;
 import com.fast.dev.search.model.PushData;
 import com.fast.dev.search.model.SearchRecord;
@@ -58,8 +57,8 @@ public class RecordService {
 	@Autowired
 	private HotWordsDao hotWordsDao;
 
-	@Autowired
-	private YouDaoWordHelper wordHelper;
+	// @Autowired
+	// private YouDaoWordHelper wordHelper;
 	// 线程池
 	private ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(20);
 
@@ -160,6 +159,9 @@ public class RecordService {
 	 * @param wd
 	 */
 	public void hitHotWord(final String words) {
+		if (StringUtils.isEmpty(words)) {
+			return;
+		}
 		threadPool.execute(new Runnable() {
 			@Override
 			public void run() {
@@ -345,9 +347,15 @@ public class RecordService {
 		Map<String, Collection<String>> highLight = queryRecord.getHighLight();
 
 		SearchRecord searchRecord = new SearchRecord();
-		// 设置ID为mongodbId
+
+		// 设置esID
+		if (queryRecord.getId() != null) {
+			searchRecord.setId(queryRecord.getId());
+		}
+
+		// 设置mongodbId
 		if (source.get("ref") != null) {
-			searchRecord.setId(String.valueOf(source.get("ref")));
+			searchRecord.setRef(String.valueOf(source.get("ref")));
 		}
 		// 标题 ，手动高亮
 		if (source.get("title") != null) {
