@@ -27,7 +27,7 @@
 
         <div class="Search_result" v-for="item in searchResult" :key="item.id" >
           <!--  标题 -->
-          <div class="Search_result_title"  v-on:click="openPage(item.id)" >
+          <div class="Search_result_title"  v-on:click="openPage(item)" >
             <span  v-html="item.title"></span>
           </div>
 
@@ -58,7 +58,7 @@
                 <span class="Page_Item_title" >相关内容：</span>
                 <span v-html="item.like"></span>
               </p>
-              <p style="text-align:center;cursor: pointer;margin: 0 auto;" v-on:click="openPage(item.id)">
+              <p style="text-align:center;cursor: pointer;margin: 0 auto;" v-on:click="openPage(item)">
                 <span  >浏览详情</span>
               </p>
               </div>
@@ -216,8 +216,15 @@ export default {
         this.search()
       }
     },
-    openPage: function (pageId) {
-      let path = ElementUtil.methods.getValueByid('HostUrl') + 'page/' + pageId + '.html'
+    openPage: function (item) {
+      // 记录hit页面
+      let url = ElementUtil.methods.getValueByid('HostUrl') + 'store/hitRecord.json'
+      ajax.post(url, 'id=' + item.id).then(function (data) {
+      }).catch(function (e) {
+        console.error(e)
+      })
+      // 弹出新页面
+      let path = ElementUtil.methods.getValueByid('HostUrl') + 'page/' + item.ref + '.html'
       window.open(path)
     },
     skipPage: function (newPage) {
