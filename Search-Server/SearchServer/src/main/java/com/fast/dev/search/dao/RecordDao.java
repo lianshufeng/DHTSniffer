@@ -18,7 +18,6 @@ import com.fast.dev.es.query.QueryLimit;
 import com.fast.dev.es.query.QueryResult;
 import com.fast.dev.es.query.QuerySort;
 import com.fast.dev.search.domain.Record;
-import com.fast.dev.search.util.StringSplit;
 
 @Repository
 public class RecordDao extends SuperDao<Record> {
@@ -74,8 +73,8 @@ public class RecordDao extends SuperDao<Record> {
 
 		// 排序
 		List<QuerySort> querySorts = new ArrayList<>();
-		// querySorts.add(new QuerySort("hitCount", SortOrder.DESC));
 		querySorts.add(new QuerySort("createTime", SortOrder.DESC));
+		querySorts.add(new QuerySort("hit", SortOrder.DESC));
 
 		// 高亮规则
 		List<QueryHighlight> queryHighlights = new ArrayList<>();

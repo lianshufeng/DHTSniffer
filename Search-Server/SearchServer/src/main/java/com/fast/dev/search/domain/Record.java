@@ -20,6 +20,8 @@ public class Record {
 	private String title;
 	// 索引关键词
 	private String index;
+	//点击次数
+	private long hit;
 	// 原始下载地址
 	@Indexed(unique = true)
 	private String url;
@@ -161,5 +163,21 @@ public class Record {
 	public void setRef(String ref) {
 		this.ref = ref;
 	}
+
+	/**
+	 * @return the hit
+	 */
+	public long getHit() {
+		return hit;
+	}
+
+	/**
+	 * @param hit the hit to set
+	 */
+	public void setHit(long hit) {
+		this.hit = hit;
+	}
+	
+	
 
 }

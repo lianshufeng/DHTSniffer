@@ -23,6 +23,9 @@ POST /resstore/Record/_mapping
                 "analyzer": "ik_max_word",
                 "search_analyzer": "ik_max_word"
             },
+            "hit": {
+                "type": "long"
+            },
             "title": {
                 "type": "text",
                 "analyzer": "ik_max_word",
