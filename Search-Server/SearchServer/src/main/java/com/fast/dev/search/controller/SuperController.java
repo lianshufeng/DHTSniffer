@@ -24,7 +24,7 @@ public abstract class SuperController {
 	 * @return
 	 */
 	protected static final ModelAndView modelAndView(String viewName) {
-		String view = "pages/" + viewName + ".htl";
+		String view = viewName + ".htl";
 		ModelAndView modelAndView = new ModelAndView(view);
 		modelAndView.addObject("viewName", viewName);
 		return modelAndView;
