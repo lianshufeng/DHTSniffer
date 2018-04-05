@@ -15,11 +15,6 @@
 		</dependency>
 		<dependency>
 			<groupId>com.fast.dev</groupId>
-			<artifactId>Template-thymeleaf</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fast.dev</groupId>
 			<artifactId>Component-ElasticSearch</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
@@ -36,11 +31,18 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
+
+
 		<dependency>
+			<groupId>com.fast.dev</groupId>
+			<artifactId>Template-thymeleaf-spring5</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+				<dependency>
 			<groupId>com.belerweb</groupId>
 			<artifactId>pinyin4j</artifactId>
 			<version>2.5.0</version>
 		</dependency>
-
 	</dependencies>
 </project>
