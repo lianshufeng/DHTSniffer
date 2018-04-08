@@ -31,6 +31,26 @@ public class RecordHitDao extends MongoDaoImpl<RecordHit> {
 	}
 
 	/**
+	 * 减少全局命中
+	 * 
+	 * @param count
+	 */
+	public synchronized void reduceHit(int inc) {
+		// >0 则减去inc
+		Query query = new Query();
+		query.addCriteria(Criteria.where("hit").gt(0));
+		Update update = new Update();
+		update.set("update", false);
+		update.inc("hit", -inc);
+		this.mongoTemplate.updateMulti(query, update, entityClass);
+
+		// 如果<0 则重置为0
+		this.mongoTemplate.updateMulti(new Query().addCriteria(Criteria.where("hit").lt(0)),
+				new Update().set("update", false).set("hit", 0), entityClass);
+
+	}
+
+	/**
 	 * 获取记录
 	 * 
 	 * @return
@@ -50,7 +70,5 @@ public class RecordHitDao extends MongoDaoImpl<RecordHit> {
 		}
 		return list;
 	}
-
-	
 
 }

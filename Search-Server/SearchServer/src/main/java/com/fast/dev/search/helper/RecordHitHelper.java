@@ -31,6 +31,22 @@ public class RecordHitHelper {
 		triggerUpdateHitData();
 	}
 
+	@Scheduled(cron = "0 30 0-23 * * ?")
+	public void reduceHitTimer() {
+		int inc = 5;
+		reduceHit(inc);
+		LOG.info("reduceHit : " + inc);
+	}
+
+	/**
+	 * 全局减少命中权重值
+	 * 
+	 * @param count
+	 */
+	public void reduceHit(int count) {
+		this.recordHitDao.reduceHit(count);
+	}
+
 	/**
 	 * 更新记录次数
 	 * 
