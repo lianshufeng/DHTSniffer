@@ -151,9 +151,8 @@ $(function () {
     $.ajax({
         method: "post",
         dataType: "json",
-        url: host + "store/hotWords.json",
+        url: host + "store/tags.json",
         data: {
-            count: 15
         },
         success: function (data) {
             if (data.invokerResult.content == null) {
@@ -168,7 +167,7 @@ $(function () {
             }
             //绑定事件
             $('#openLinkDiv').find('button').click(function () {
-                var url = host + 'index.html#/s/' + $(this).html();
+                var url = host + 'index.html#/s/tag:' + $(this).html();
                 window.open(url);
             });
         }
