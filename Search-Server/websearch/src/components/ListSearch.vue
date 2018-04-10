@@ -112,6 +112,30 @@
 
       <div class="Search_content_right" ref="Search_content_right">
 
+        <!--智能标签-->
+        <div class="RightTopList_top_list" >
+          <div >
+            <p class="RightTopList_content_right_title" >推荐榜</p>
+          </div>
+          <div class="RightTopList_rank_title" >
+            <span class="RightTopList_float_left" >排行</span>
+            <span class="RightTopList_float_right" >指数</span>
+          </div>
+          <ul class="RightTopList_rank_list" >
+            <template v-for="(item,i) in (tagsResult) ">
+              <li :key="i" >
+                <span class="RightTopList_float_left line-limit-length">
+                  <em class="RightTopList_rank_num"
+                      v-bind:class="{ RightTopList_rank_num_3: (i+1)==3, RightTopList_rank_num_2: (i+1)==2 , RightTopList_rank_num_1: (i+1)==1 }">{{i+1}}</em>
+                  <a href="#" v-on:click="wd='tag:'+item.name;search()">{{ item.name }}</a>
+                </span>
+                <span class="RightTopList_float_right">
+                  {{item.count}}
+                </span>
+              </li>
+            </template>
+          </ul>
+        </div>
         <!--热词榜-->
         <div class="RightTopList_top_list" >
           <div >
@@ -131,31 +155,6 @@
                 </span>
                 <span class="RightTopList_float_right">
                   {{item.hit}}
-                </span>
-              </li>
-            </template>
-          </ul>
-        </div>
-
-        <!--最新收录-->
-        <div class="RightTopList_top_list" >
-          <div >
-            <p class="RightTopList_content_right_title" >最新收录</p>
-          </div>
-          <div class="RightTopList_rank_title" >
-            <span class="RightTopList_float_left" >排名</span>
-            <span class="RightTopList_float_right" >时间</span>
-          </div>
-          <ul class="RightTopList_rank_list" >
-            <template v-for="(item,i) in (newsResult) ">
-              <li :key="i" >
-                <span class="RightTopList_float_left line-limit-length">
-                  <em class="RightTopList_rank_num"
-                      v-bind:class="{ RightTopList_rank_num_3: (i+1)==3, RightTopList_rank_num_2: (i+1)==2 , RightTopList_rank_num_1: (i+1)==1 }">{{i+1}}</em>
-                  <a href="#" v-on:click="wd=item.name;search()">{{ item.name }}</a>
-                </span>
-                <span class="RightTopList_float_right">
-                  {{item.time}}
                 </span>
               </li>
             </template>
@@ -195,7 +194,8 @@ export default {
   name: 'ListSearch',
   methods: {
     showRightContent: function (val) {
-      this.$refs.Search_content_right.style.display = val > 900 ? '' : 'none'
+      // this.$refs.Search_content_right.style.display = val > 900 ? '' : 'none'
+      this.$refs.Search_content_right.style.float = val > 900 ? 'right' : 'left'
     },
     beforeCurrentTotal: function (currentPage) {
       return (currentPage < 6 ? currentPage : 6) - 1
@@ -239,11 +239,11 @@ export default {
         console.error(e)
       })
     },
-    updateNewsResult: function () {
+    updateTagsResult: function () {
       let me = this
-      let url = ElementUtil.methods.getValueByid('HostUrl') + 'store/news.json'
-      ajax.post(url, 'count=15').then(function (data) {
-        me.newsResult = data.data.invokerResult.content
+      let url = ElementUtil.methods.getValueByid('HostUrl') + 'store/tags.json'
+      ajax.post(url, '').then(function (data) {
+        me.tagsResult = data.data.invokerResult.content
       }).catch(function (e) {
         console.error(e)
       })
@@ -288,7 +288,7 @@ export default {
         total: 1,
         current: 1
       },
-      newsResult: [],
+      tagsResult: [],
       hotWordsResult: [],
       searchResult: [
         // {
@@ -323,7 +323,7 @@ export default {
     this.showRightContent(me.screenWidth)
 
     // 更新最新收录表
-    this.updateNewsResult()
+    this.updateTagsResult()
     // 更新热词表
     this.updateHotWordsResult()
   },
