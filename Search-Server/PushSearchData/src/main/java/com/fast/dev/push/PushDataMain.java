@@ -23,13 +23,14 @@ public class PushDataMain {
 	private static final AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
 
 	static ScheduledExecutorService threadPool = null;
-	
+
 	public static void main(String[] args) throws Exception {
 		// 注册配置到spring中
 		ConfigurableListableBeanFactory configurableListableBeanFactory = applicationContext.getBeanFactory();
 		configurableListableBeanFactory.registerSingleton("hostServerConfig", hostServerConfig());
 		applicationContext.scan("com.fast.dev");
 		applicationContext.refresh();
+
 		Collection<PushDataServiceConfig> configs = pushDataServiceConfigs();
 
 		// 调度器
@@ -45,7 +46,8 @@ public class PushDataMain {
 
 	@SuppressWarnings("unchecked")
 	private static Class<DataPushService> readClass(PushDataServiceConfig config) throws ClassNotFoundException {
-		return (Class<DataPushService>) Class.forName(DataPushService.class.getPackage().getName() + ".impl." + config.getClassName());
+		return (Class<DataPushService>) Class
+				.forName(DataPushService.class.getPackage().getName() + ".impl." + config.getClassName());
 	}
 
 	/**

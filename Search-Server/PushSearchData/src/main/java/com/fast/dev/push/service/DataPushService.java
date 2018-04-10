@@ -3,10 +3,8 @@ package com.fast.dev.push.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +12,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexInfo;
+import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -90,6 +88,7 @@ public abstract class DataPushService {
 	// 初始化索引
 	private void initMongodbIndex(String itemName) {
 		String indexName = itemName + "_Index";
+		
 		IndexOperations indexOperations = this.mongoTemplate.indexOps(this.pushConfig.getCollectionName());
 		List<IndexInfo> nowIndexInfos = indexOperations.getIndexInfo();
 		for (IndexInfo info : nowIndexInfos) {
