@@ -26,6 +26,7 @@ public class RecordDao extends SuperDao<Record> {
 
 	private static final String TitleName = "title";
 	private static final String IndexName = "index";
+	private static final String TagsName = "tags";
 
 	/**
 	 * 取出对应数据
@@ -81,7 +82,7 @@ public class RecordDao extends SuperDao<Record> {
 	 * @param postTag
 	 * @return
 	 */
-	public QueryResult search(final String wd, int from, int size, String preTag, String postTag) {
+	public QueryResult searchWord(final String wd, int from, int size, String preTag, String postTag) {
 
 		// 自动分割，多次匹配
 		// final String[] wds = StringSplit.split(wd);
@@ -106,6 +107,34 @@ public class RecordDao extends SuperDao<Record> {
 
 		return this.esDao.list(queryBuilder, 20, queryHighlights, querySorts, queryLimit);
 	}
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * 搜索标记
+	 * @param wd
+	 * @param from
+	 * @param size
+	 * @return
+	 */
+	public QueryResult searchTag(final String tagName, int from, int size) {
+		// 分页
+		QueryLimit queryLimit = new QueryLimit(from, size, 5000l);
+
+		// 排序
+		List<QuerySort> querySorts = new ArrayList<>();
+		querySorts.add(new QuerySort("hit", SortOrder.DESC));
+		querySorts.add(new QuerySort("createTime", SortOrder.DESC));
+
+		//查询
+		return this.esDao.list(QueryBuilders.matchPhraseQuery(TagsName, tagName), 20, null, querySorts, queryLimit);
+	}
+	
+	
 
 	/**
 	 * 构建查询对象

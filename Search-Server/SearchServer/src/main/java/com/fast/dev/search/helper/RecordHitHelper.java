@@ -33,7 +33,7 @@ public class RecordHitHelper {
 
 	@Scheduled(cron = "0 30 0-23 * * ?")
 	public void reduceHitTimer() {
-		int inc = 5;
+		int inc = 2;
 		reduceHit(inc);
 		LOG.info("reduceHit : " + inc);
 	}

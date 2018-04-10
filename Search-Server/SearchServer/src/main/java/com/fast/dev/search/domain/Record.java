@@ -36,6 +36,8 @@ public class Record {
 	private long publishTime;
 	// 创建时间
 	private long createTime;
+	// 标签
+	private String tags;
 
 	/**
 	 * @return the title
@@ -178,6 +180,14 @@ public class Record {
 	 */
 	public void setHit(long hit) {
 		this.hit = hit;
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
 	}
 
 }

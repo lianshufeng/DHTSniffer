@@ -28,6 +28,7 @@ import com.fast.dev.search.dao.HotWordsDao;
 import com.fast.dev.search.dao.PushDataCacheDao;
 import com.fast.dev.search.dao.RecordDao;
 import com.fast.dev.search.dao.RecordInfoDao;
+import com.fast.dev.search.dao.RecordTagDao;
 import com.fast.dev.search.domain.HotWord;
 import com.fast.dev.search.domain.Record;
 import com.fast.dev.search.domain.RecordInfo;
@@ -35,6 +36,7 @@ import com.fast.dev.search.model.FileModel;
 import com.fast.dev.search.model.PushData;
 import com.fast.dev.search.model.SearchRecord;
 import com.fast.dev.search.model.SearchResult;
+import com.fast.dev.search.tags.TagManager;
 import com.fast.dev.search.util.FileTypeUtil;
 import com.fast.dev.search.util.FormatUtil;
 import com.fast.dev.search.util.PinyinTool;
@@ -56,6 +58,12 @@ public class RecordService {
 
 	@Autowired
 	private HotWordsDao hotWordsDao;
+
+	@Autowired
+	private TagManager tagManager;
+
+	@Autowired
+	private RecordTagDao recordTagDao;
 
 	// @Autowired
 	// private YouDaoWordHelper wordHelper;
@@ -84,14 +92,24 @@ public class RecordService {
 	 * @param page
 	 * @param size
 	 */
-	@CacheMethod(collectionName = "Record_search", overflowToDisk = true, maxMemoryCount = 100, timeToIdleSeconds = 300, timeToLiveSeconds = 300)
-	public SearchResult search(@CacheParameter String wd, @CacheParameter Integer page, @CacheParameter Integer size,
-			@CacheParameter String preTag, @CacheParameter String postTag) {
+	@CacheMethod(collectionName = "Record_search_word", overflowToDisk = true, maxMemoryCount = 100, timeToIdleSeconds = 300, timeToLiveSeconds = 300)
+	public SearchResult searchWord(@CacheParameter String wd, @CacheParameter Integer page,
+			@CacheParameter Integer size, @CacheParameter String preTag, @CacheParameter String postTag) {
 		// 开始记录数
 		int from = (page - 1) * size;
-		QueryResult queryResult = this.recordDao.search(wd, from, size, preTag, postTag);
+		QueryResult queryResult = this.recordDao.searchWord(wd, from, size, preTag, postTag);
 		// 数据转换到视图层
 		return toSearchResult(queryResult, wd, preTag, postTag);
+	}
+
+	@CacheMethod(collectionName = "Record_search_tag", overflowToDisk = true, maxMemoryCount = 100, timeToIdleSeconds = 300, timeToLiveSeconds = 300)
+	public SearchResult searchTag(@CacheParameter String wd, @CacheParameter Integer page,
+			@CacheParameter Integer size) {
+		// 开始记录数
+		int from = (page - 1) * size;
+		QueryResult queryResult = this.recordDao.searchTag(wd, from, size);
+		// 数据转换到视图层
+		return toSearchResult(queryResult, wd, null, null);
 	}
 
 	/**
@@ -135,9 +153,8 @@ public class RecordService {
 				}
 			}
 		}
-		List<Record> saveDatas = new ArrayList<>(records.values());
 		try {
-			LinkedHashMap<String, String> result = this.recordDao.save(saveDatas);
+			LinkedHashMap<String, String> result = this.recordDao.save(new ArrayList<>(records.values()));
 			if (result != null && result.size() > 0) {
 				this.dataCacheDao.finishCache(records.keySet().toArray(new String[0]));
 			}
@@ -165,7 +182,11 @@ public class RecordService {
 		threadPool.execute(new Runnable() {
 			@Override
 			public void run() {
-				hotWordsDao.hit(1, StringSplit.split(words));
+				if (words.toLowerCase().indexOf("tag:") == 0) {
+					hotWordsDao.hit(1, words);
+				} else {
+					hotWordsDao.hit(1, StringSplit.split(words));
+				}
 			}
 		});
 	}
@@ -194,8 +215,12 @@ public class RecordService {
 		setRecordFiles(recordInfo, data);
 		// 设置索引关键词
 		setRecordIndex(recordInfo, data);
+		// 设置标签
+		setRecordTags(recordInfo, data);
 		// 先入本地库
 		this.recordInfoDao.save(recordInfo);
+		// 标签子真数量入库
+		this.recordTagDao.inc(StringSplit.split(recordInfo.getTags()));
 		// 拷贝对象
 		Record record = new Record();
 		BeanUtils.copyProperties(recordInfo, record);
@@ -239,29 +264,84 @@ public class RecordService {
 	}
 
 	/**
+	 * 遍历所有可能形成标签的地方
+	 * 
+	 * @param record
+	 * @param data
+	 * @param recordMatch
+	 */
+	private void findRecordTags(final Record record, final PushData data, boolean needExtension,
+			final RecordMatch recordMatch) {
+		// 标题
+		recordMatch.match(record.getTitle());
+		// URL
+		String url = FilenameUtils.getBaseName(data.getUrl());
+		if (needExtension) {
+			url += "." + FilenameUtils.getExtension(data.getUrl());
+		}
+		recordMatch.match(url);
+		// 文件列表
+		if (data.getFiles() != null) {
+			for (final String filePath : data.getFiles().keySet()) {
+				String fileName = FilenameUtils.getBaseName(filePath);
+				if (needExtension) {
+					fileName += "." + FilenameUtils.getExtension(filePath);
+				}
+				recordMatch.match(fileName);
+			}
+		}
+	}
+
+	/**
+	 * 设置标签
+	 * 
+	 * @param record
+	 * @param data
+	 */
+	private void setRecordTags(final Record record, final PushData data) {
+		final Set<String> tagNames = new HashSet<>();
+		final Set<String> values = new HashSet<>();
+		findRecordTags(record, data, true, new RecordMatch() {
+			@Override
+			public void match(String value) {
+				values.add(value);
+			}
+		});
+		// 转换到标签
+		toTagNames(tagNames, values);
+		record.setTags(StringSplit.join(" ", tagNames));
+	}
+
+	/**
+	 * 转换到标签记录
+	 * 
+	 * @param tagNames
+	 * @param value
+	 */
+	private void toTagNames(final Set<String> tagNames, final Set<String> value) {
+		Set<String> results = this.tagManager.match(value.toArray(new String[0]));
+		if (results != null && results.size() > 0) {
+			tagNames.addAll(results);
+		}
+	}
+
+	/**
 	 * 设置索引
 	 * 
 	 * @param record
 	 * @param data
 	 */
 	private void setRecordIndex(final Record record, final PushData data) {
-		Set<String> indexNames = new HashSet<>();
-		// 标题
-		toIndexNames(indexNames, record.getTitle());
-		// URL
-		toIndexNames(indexNames, FilenameUtils.getBaseName(data.getUrl()));
-		// 文件列表
-		if (data.getFiles() != null) {
-			for (String filePath : data.getFiles().keySet()) {
-				toIndexNames(indexNames, FilenameUtils.getBaseName(filePath));
+		final Set<String> indexNames = new HashSet<>();
+		// 遍历所有标签
+		findRecordTags(record, data, false, new RecordMatch() {
+			@Override
+			public void match(String value) {
+				toIndexNames(indexNames, value);
 			}
-		}
+		});
 		// 转换为索引名
-		StringBuilder sb = new StringBuilder();
-		for (String indexName : indexNames) {
-			sb.append(indexName + " ");
-		}
-		record.setIndex(sb.toString());
+		record.setIndex(StringSplit.join(" ", indexNames));
 	}
 
 	/**
@@ -361,7 +441,9 @@ public class RecordService {
 		if (source.get("title") != null) {
 			String title = String.valueOf(source.get("title"));
 			try {
-				title = title.replaceAll(wd, preTag + wd + postTag);
+				if (preTag != null && postTag != null) {
+					title = title.replaceAll(wd, preTag + wd + postTag);
+				}
 			} catch (Exception e) {
 			}
 			searchRecord.setTitle(title);
@@ -404,6 +486,25 @@ public class RecordService {
 		}
 
 		return searchRecord;
+	}
+
+	/**
+	 * 记录拆词接口
+	 * 
+	 * @作者 练书锋
+	 * @时间 2018年4月10日
+	 *
+	 *
+	 */
+	interface RecordMatch {
+
+		/**
+		 * 记录匹配
+		 * 
+		 * @param value
+		 */
+		public void match(String value);
+
 	}
 
 }

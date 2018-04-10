@@ -26,6 +26,11 @@ POST /resstore/Record/_mapping
             "hit": {
                 "type": "long"
             },
+            "tags": {
+                "type": "text",
+                "analyzer": "ik_max_word",
+                "search_analyzer": "ik_max_word"
+            },
             "title": {
                 "type": "text",
                 "analyzer": "ik_max_word",
@@ -60,5 +65,15 @@ POST /resstore/Record/_search
             "title" : {}
         }
     }
+}
+
+###查询一条记录
+GET /resstore/Record/_mget
+{
+    "docs" : [
+        {
+            "_id" : "m8Ilr2IBK1pY2aVnzuEx"
+        }
+    ]
 }
 
