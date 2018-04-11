@@ -15,6 +15,8 @@ public class LikeTag {
 	private String[] likes;
 	// 排序
 	private int sort;
+	// 过滤
+	private String[] excludes;
 
 	public String[] getNames() {
 		return names;
@@ -40,15 +42,24 @@ public class LikeTag {
 		this.sort = sort;
 	}
 
-	public LikeTag(String[] names, String[] likes, int sort) {
+	public LikeTag(String[] names, String[] likes, int sort, String[] excludes) {
 		super();
 		this.names = names;
 		this.likes = likes;
 		this.sort = sort;
+		this.excludes = excludes;
 	}
 
 	public LikeTag() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public String[] getExcludes() {
+		return excludes;
+	}
+
+	public void setExcludes(String[] excludes) {
+		this.excludes = excludes;
 	}
 
 }

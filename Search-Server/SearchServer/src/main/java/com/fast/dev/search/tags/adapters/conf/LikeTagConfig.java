@@ -14,6 +14,8 @@ public class LikeTagConfig {
 	private String likes;
 	// 排序
 	private int sort;
+	// 排除不包含
+	private String excludes;
 
 	public String getLikes() {
 		return likes;
@@ -29,6 +31,14 @@ public class LikeTagConfig {
 
 	public void setSort(int sort) {
 		this.sort = sort;
+	}
+
+	public String getExcludes() {
+		return excludes;
+	}
+
+	public void setExcludes(String excludes) {
+		this.excludes = excludes;
 	}
 
 }

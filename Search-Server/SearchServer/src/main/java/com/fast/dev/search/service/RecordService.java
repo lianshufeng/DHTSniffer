@@ -214,12 +214,12 @@ public class RecordService {
 		// 设置文件列表
 		setRecordFiles(recordInfo, data);
 		// 设置索引关键词
-		setRecordIndex(recordInfo, data);
+		setRecordIndex(recordInfo);
 		// 设置标签
-		setRecordTags(recordInfo, data);
+		setRecordTags(recordInfo);
 		// 先入本地库
 		this.recordInfoDao.save(recordInfo);
-		// 标签子真数量入库
+		// 标签自增数量入库
 		this.recordTagDao.inc(StringSplit.split(recordInfo.getTags()));
 		// 拷贝对象
 		Record record = new Record();
@@ -270,19 +270,19 @@ public class RecordService {
 	 * @param data
 	 * @param recordMatch
 	 */
-	private void findRecordTags(final Record record, final PushData data, boolean needExtension,
-			final RecordMatch recordMatch) {
+	private void findRecordTags(final RecordInfo record, boolean needExtension, final RecordMatch recordMatch) {
 		// 标题
 		recordMatch.match(record.getTitle());
 		// URL
-		String url = FilenameUtils.getBaseName(data.getUrl());
+		String url = FilenameUtils.getBaseName(record.getUrl());
 		if (needExtension) {
-			url += "." + FilenameUtils.getExtension(data.getUrl());
+			url += "." + FilenameUtils.getExtension(record.getUrl());
 		}
 		recordMatch.match(url);
 		// 文件列表
-		if (data.getFiles() != null) {
-			for (final String filePath : data.getFiles().keySet()) {
+		if (record.getFiles() != null) {
+			for (final FileModel fileModel : record.getFiles()) {
+				String filePath = fileModel.getPath();
 				String fileName = FilenameUtils.getBaseName(filePath);
 				if (needExtension) {
 					fileName += "." + FilenameUtils.getExtension(filePath);
@@ -298,10 +298,10 @@ public class RecordService {
 	 * @param record
 	 * @param data
 	 */
-	private void setRecordTags(final Record record, final PushData data) {
+	public void setRecordTags(final RecordInfo record) {
 		final Set<String> tagNames = new HashSet<>();
 		final Set<String> values = new HashSet<>();
-		findRecordTags(record, data, true, new RecordMatch() {
+		findRecordTags(record, true, new RecordMatch() {
 			@Override
 			public void match(String value) {
 				values.add(value);
@@ -331,10 +331,10 @@ public class RecordService {
 	 * @param record
 	 * @param data
 	 */
-	private void setRecordIndex(final Record record, final PushData data) {
+	private void setRecordIndex(final RecordInfo record) {
 		final Set<String> indexNames = new HashSet<>();
 		// 遍历所有标签
-		findRecordTags(record, data, false, new RecordMatch() {
+		findRecordTags(record, false, new RecordMatch() {
 			@Override
 			public void match(String value) {
 				toIndexNames(indexNames, value);

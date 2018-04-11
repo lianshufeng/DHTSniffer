@@ -1,6 +1,10 @@
 package com.fast.dev.search.dao;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
@@ -26,6 +30,18 @@ public class RecordInfoDao extends MongoDaoImpl<RecordInfo> {
 	 */
 	public boolean urlExits(String url) {
 		return this.mongoTemplate.exists(new Query().addCriteria(Criteria.where("url").is(url)), entityClass);
+	}
+
+	/**
+	 * 查询指定的时间段数据
+	 * 
+	 */
+	public List<RecordInfo> findFromTime(long time, int limit) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("createTime").gt(time));
+		query.limit(limit);
+		query.with(new Sort(Direction.ASC, "createTime"));
+		return	this.mongoTemplate.find(query, entityClass); 
 	}
 
 }

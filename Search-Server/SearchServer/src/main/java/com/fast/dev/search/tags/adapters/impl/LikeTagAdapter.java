@@ -56,8 +56,11 @@ public class LikeTagAdapter extends TagAdapter {
 			Map<String, Object> properties = entry.getValue();
 			LikeTagConfig likeTagConf = new LikeTagConfig();
 			BeanUtils.populate(likeTagConf, properties);
-			LikeTag likeTag = new LikeTag(StringSplit.split(entry.getKey()), StringSplit.split(likeTagConf.getLikes()),
-					likeTagConf.getSort());
+			String[] names = StringSplit.split(entry.getKey());
+			String[] likes = StringSplit.split(likeTagConf.getLikes());
+			int sort = likeTagConf.getSort();
+			String[] excludes = StringSplit.split(likeTagConf.getExcludes());
+			LikeTag likeTag = new LikeTag(names, likes, sort, excludes);
 			this.likeTags.add(likeTag);
 		}
 	}
@@ -83,10 +86,20 @@ public class LikeTagAdapter extends TagAdapter {
 			for (LikeTag likeTag : this.likeTags) {
 				// 遍历标签所有的匹配字符串
 				for (String like : likeTag.getLikes()) {
-					// 值里是否包含需要匹配的字符串
-					if (val.toLowerCase().indexOf(like.toLowerCase()) > -1) {
+					boolean contain = val.toLowerCase().indexOf(like.toLowerCase()) > -1;
+					// 过滤排除
+					if (likeTag.getExcludes() != null) {
+						for (String exclude : likeTag.getExcludes()) {
+							if (val.toLowerCase().indexOf(exclude.toLowerCase()) > -1) {
+								contain = false;
+								break;
+							}
+						}
+					}
+					if (contain) {
 						result.addAll(Arrays.asList(likeTag.getNames()));
 					}
+
 				}
 			}
 		}

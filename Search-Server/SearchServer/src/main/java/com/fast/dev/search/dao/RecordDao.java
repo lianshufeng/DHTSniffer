@@ -73,6 +73,27 @@ public class RecordDao extends SuperDao<Record> {
 	}
 
 	/**
+	 * 设置标签
+	 * 
+	 * @param updateMap
+	 *            , key为mongodb的id，value为tags
+	 */
+	public void setTag(Map<String, Object> updateMap) {
+		// 值为value
+		Map<String, String> key = this.esDao.find("ref", updateMap.keySet().toArray(new String[0]));
+		Map<String, Object> sources = new HashMap<>();
+		for (Entry<String, String> entry : key.entrySet()) {
+			String mongoId = entry.getKey();
+			String esId = entry.getValue();
+			String newTags = String.valueOf(updateMap.get(mongoId));
+			Map<String, Object> update = new HashMap<>();
+			update.put("tags", newTags);
+			sources.put(esId, update);
+		}
+		this.esDao.update(sources);
+	}
+
+	/**
 	 * 分页查询
 	 * 
 	 * @param wd
@@ -107,15 +128,10 @@ public class RecordDao extends SuperDao<Record> {
 
 		return this.esDao.list(queryBuilder, 20, queryHighlights, querySorts, queryLimit);
 	}
-	
-	
-	
-	
-	
-	
-	
+
 	/**
 	 * 搜索标记
+	 * 
 	 * @param wd
 	 * @param from
 	 * @param size
@@ -130,11 +146,9 @@ public class RecordDao extends SuperDao<Record> {
 		querySorts.add(new QuerySort("hit", SortOrder.DESC));
 		querySorts.add(new QuerySort("createTime", SortOrder.DESC));
 
-		//查询
+		// 查询
 		return this.esDao.list(QueryBuilders.matchPhraseQuery(TagsName, tagName), 20, null, querySorts, queryLimit);
 	}
-	
-	
 
 	/**
 	 * 构建查询对象
